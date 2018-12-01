@@ -1,11 +1,18 @@
 package com.auth.face.faceauth;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class LoginResult implements Serializable {
 
+    @SerializedName("image")
     private String base64Photo;
+
+    @SerializedName("name")
     private String username;
+
+    @SerializedName("dob")
     private String dob;
 
     public String getBase64Photo() {
