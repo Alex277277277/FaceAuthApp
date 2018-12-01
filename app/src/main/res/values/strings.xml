@@ -1,4 +1,27 @@
 <resources>
     <string name="app_name">Face Auth</string>
+
+    <string name="subscription_key">27a2c146c96f4355a83ba3ddec3a394c</string>
+    <string name="endpoint">https://westcentralus.api.cognitive.microsoft.com/face/v1.0</string>
+
     <string name="sign_in">Sign In</string>
+    <string name="username">User name</string>
+    <string name="password">Password</string>
+    <string name="signing_in">Signing in</string>
+
+    <string name="face_verifying">Verifying face</string>
+    <string name="face_match">Faces match</string>
+    <string name="face_no_match">Faces don\'t match</string>
+
+    <string name="label_username">Name  :</string>
+    <string name="label_dob">D.O.B. :</string>
+
+    <string name="err_empty_username">User name is empty</string>
+    <string name="err_empty_password">Password is empty</string>
+    <string name="err_connection">Unable to connect to the server</string>
+    <string name="err_login_failed">Login request failed</string>
+    <string name="err_face_not_detected">Unable to detect face on photo</string>
+    <string name="err_detection">Face detection request failed</string>
+
+    <string name="photo_face_detection">Trying to detect face on photo...</string>
 </resources>
