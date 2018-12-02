@@ -42,6 +42,7 @@ public class FaceAuthViewModel extends BaseViewModel {
 
     private FaceServiceRestClient faceServiceClient;
     private UUID photoFaceId;
+    private double matchScore = -1.0;
 
     private Scheduler processingScheduler = Schedulers.from(Executors.newSingleThreadExecutor());
     private PublishSubject<Bitmap> faceImageNotifier = PublishSubject.create();
@@ -79,6 +80,10 @@ public class FaceAuthViewModel extends BaseViewModel {
 
     public MutableLiveData<FaceState> getFaceState() {
         return faceState;
+    }
+
+    public double getMatchScore() {
+        return matchScore;
     }
 
     public void initialize() {
@@ -177,6 +182,7 @@ public class FaceAuthViewModel extends BaseViewModel {
     }
 
     private void onFaceVerificationSuccess(VerifyResult verifyResult) {
+        matchScore = verifyResult.confidence;
         if (verifyResult.isIdentical) {
             LoggerInstance.get().debug(TAG, "onFaceVerificationSuccess -> FACES MATCH");
             faceState.setValue(FaceState.MATCH);
@@ -190,6 +196,7 @@ public class FaceAuthViewModel extends BaseViewModel {
 
     private void onFaceVerificationFailed(Throwable throwable) {
         LoggerInstance.get().debug(TAG, "onFaceVerificationFailed " + throwable);
+        matchScore = -1.0;
         faceState.setValue(FaceState.FAILURE);
         postWaitingStateDelayed(INTERVAL_NOT_MATCH);
     }

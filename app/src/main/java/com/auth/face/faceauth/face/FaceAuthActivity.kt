@@ -169,6 +169,7 @@ class FaceAuthActivity : AppCompatActivity() {
             return
         }
 
+        val scoreString =  if (viewModel.matchScore != -1.0) {" Score: " + (viewModel.matchScore*100).toInt()} else {""}
         when (state) {
             FaceState.VERIFYING -> {
                 vState.setBackgroundDrawable(resources.getDrawable(R.drawable.circle_orange))
@@ -178,13 +179,13 @@ class FaceAuthActivity : AppCompatActivity() {
 
             FaceState.MATCH -> {
                 vState.setBackgroundDrawable(resources.getDrawable(R.drawable.circle_green))
-                tvState.text = resources.getString(R.string.face_match)
+                tvState.text = resources.getString(R.string.face_match) + scoreString
                 tvState.setTextColor(resources.getColor(R.color.colorGreen))
             }
 
             FaceState.FAILURE -> {
                 vState.setBackgroundDrawable(resources.getDrawable(R.drawable.circle_red))
-                tvState.text = resources.getString(R.string.face_no_match)
+                tvState.text = resources.getString(R.string.face_no_match) + scoreString
                 tvState.setTextColor(resources.getColor(R.color.colorRed))
             }
         }
