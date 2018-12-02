@@ -54,6 +54,11 @@ public class LoginViewModel extends BaseViewModel {
     private void onLoginSuccess(LoginResult result) {
         hideLoading();
 
+        if (!TextUtils.isEmpty(result.getError())) {
+            Toast.makeText(mContext, result.getError(), Toast.LENGTH_LONG).show();
+            return;
+        }
+
         String photoBase64 = result.getBase64Photo();
         if (TextUtils.isEmpty(photoBase64)) {
             Toast.makeText(mContext, R.string.err_login_failed, Toast.LENGTH_LONG).show();

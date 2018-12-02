@@ -4,12 +4,13 @@ import android.Manifest
 import android.arch.lifecycle.Observer
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_login.*
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import com.auth.face.faceauth.face.FaceAuthActivity
 import com.auth.face.faceauth.R
@@ -20,8 +21,18 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_login)
         btSignIn.setOnClickListener { v -> viewModel.login(etUserName.text.toString(), etUserPassword.text.toString()) }
+        etUserPassword.setOnEditorActionListener { v, actionId, event ->
+            return@setOnEditorActionListener when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> {
+                    viewModel.login(etUserName.text.toString(), etUserPassword.text.toString())
+                    true
+                }
+                else -> false
+            }
+        }
+
         initializeViewModel()
 
         requestCameraPermissionIfNeeded()

@@ -15,6 +15,8 @@ public class LoginResult implements Serializable {
     @SerializedName("dob")
     private String dob;
 
+    private String error;
+
     public String getBase64Photo() {
         return base64Photo;
     }
@@ -37,5 +39,13 @@ public class LoginResult implements Serializable {
 
     public void setDob(String dob) {
         this.dob = dob;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 }

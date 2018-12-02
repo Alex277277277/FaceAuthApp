@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.auth.face.faceauth.base.Utils;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -25,8 +24,8 @@ public class ApiManager {
                 loginResult.setUsername("Alex");
                 loginResult.setDob("11-11-2000");
             }*/
-            loginResult = getMockLoginResult();
-            Thread.sleep(1000);
+            loginResult = getMockLoginResult(userName, password);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -79,7 +78,14 @@ public class ApiManager {
     }
 
 
-    private LoginResult getMockLoginResult() {
+    private LoginResult getMockLoginResult(String userName, String password) {
+        //data = data.substring(url.indexOf(",")) - remove web URI
+        if (!userName.equals("test") || !password.equals("test")) {
+            LoginResult result = new LoginResult();
+            result.setError("Invalid user name or password");
+            return result;
+        }
+
         String jsonAssetPath = "mock.json";
 
         String json = readJSONFromAsset(FaceAuthApp.Companion.getApp(), jsonAssetPath);
