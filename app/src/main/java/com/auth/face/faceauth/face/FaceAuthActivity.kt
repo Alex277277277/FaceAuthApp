@@ -163,34 +163,15 @@ class FaceAuthActivity : AppCompatActivity() {
     }
 
     private fun updateState(state: FaceState?) {
-        if (state == null || state == FaceState.WAITING) {
-            Utils.blinkView(vState, false)
-            llState.visibility = View.GONE
-            return
-        }
+        Utils.blinkView(vStateRed, false)
+        Utils.blinkView(vStateOrange, false)
+        Utils.blinkView(vStateGreen, false)
 
-        val scoreString =  if (viewModel.matchScore != -1.0) {" Score: " + (viewModel.matchScore*100).toInt()} else {""}
         when (state) {
-            FaceState.VERIFYING -> {
-                vState.setBackgroundDrawable(resources.getDrawable(R.drawable.circle_orange))
-                tvState.text = resources.getString(R.string.face_verifying)
-                tvState.setTextColor(resources.getColor(R.color.colorOrange))
-            }
-
-            FaceState.MATCH -> {
-                vState.setBackgroundDrawable(resources.getDrawable(R.drawable.circle_green))
-                tvState.text = resources.getString(R.string.face_match) + scoreString
-                tvState.setTextColor(resources.getColor(R.color.colorGreen))
-            }
-
-            FaceState.FAILURE -> {
-                vState.setBackgroundDrawable(resources.getDrawable(R.drawable.circle_red))
-                tvState.text = resources.getString(R.string.face_no_match) + scoreString
-                tvState.setTextColor(resources.getColor(R.color.colorRed))
-            }
+            FaceState.VERIFYING -> Utils.blinkView(vStateOrange, true)
+            FaceState.MATCH -> Utils.blinkView(vStateGreen, true)
+            FaceState.FAILURE -> Utils.blinkView(vStateRed, true)
         }
-        llState.visibility = View.VISIBLE
-        Utils.blinkView(vState, true)
     }
 
 }
