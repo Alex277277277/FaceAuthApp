@@ -1,111 +1,82 @@
 package com.auth.face.faceauth;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.auth.face.faceauth.base.Utils;
-import com.google.gson.Gson;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import com.auth.face.faceauth.base.AppException;
+import com.auth.face.faceauth.logger.LoggerInstance;
 
 public class ApiManager {
 
-    public LoginResult login(Context context, String userName, String password) {
+    private static final String TAG = FaceAuthApp.Companion.getTAG() + ":" + ApiManager.class.getSimpleName();
+
+    private static final String LOGIN_URL = "http://testportalapp2.azurewebsites.net/api/user?uId=2122";
+    private static final String TAG_MARKER = "\\\"";
+    private static final String TAG_END_MARKER = "\\\":";
+
+    public LoginResult login(String userName, String password) {
         LoginResult loginResult = new LoginResult();
         try {
-            /*byte[] imageData = loadMockImage(context);
-            if (imageData != null) {
-                Log.v("FaceAuth", "Base64 ok, length = " + imageData.length);
-                loginResult.setBase64Photo(Utils.toBase64(imageData));
-                loginResult.setUsername("Alex");
-                loginResult.setDob("11-11-2000");
-            }*/
-            loginResult = getMockLoginResult(userName, password);
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            HttpCommunicator httpCommunicator = new HttpCommunicator();
+            String httpResponse = httpCommunicator.loginRequest(LOGIN_URL, userName, password);
+            return parseLoginResponse(httpResponse);
+        } catch (AppException e) {
+            LoggerInstance.get().error(TAG, " Login failed: ", e);
+            loginResult.setError(e.getMessage());
         }
         return loginResult;
     }
 
-    private byte[] loadMockImage(Context context) {
-        String filePath = context
-                .getExternalFilesDir(null)
-                .getAbsolutePath() + "/mock0.jpg";
-        File file = new File(filePath);
-        if (file.exists()) {
-            Log.v("FaceAuth", "File exists");
-        } else {
-            Log.v("FaceAuth", "File NOT exists");
-        }
-
-        ByteArrayOutputStream ous = null;
-        InputStream ios = null;
-        try {
-            byte[] buffer = new byte[4096];
-            ous = new ByteArrayOutputStream();
-            ios = new FileInputStream(file);
-            int read;
-            while ((read = ios.read(buffer)) != -1) {
-                ous.write(buffer, 0, read);
-            }
-            Log.v("FaceAuth", "Converted");
-            return ous.toByteArray();
-
-        } catch (Exception e) {
-
-        }
-        finally {
-            try {
-                if (ous != null)
-                    ous.close();
-            } catch (IOException e) {
-
-            }
-
-            try {
-                if (ios != null)
-                    ios.close();
-            } catch (IOException e) {
-
-            }
-        }
-        return null;
+    private LoginResult parseLoginResponse(String loginResponse) {
+        LoginResult loginResult = new LoginResult();
+        loginResult.setBase64Photo(parseImageTag(loginResponse, "image"));
+        loginResult.setUsername(parseTag(loginResponse, "name"));
+        loginResult.setDob(parseTag(loginResponse, "dob"));
+        return loginResult;
     }
 
+    private String parseTag(String data, String tagName) {
+        LoggerInstance.get().debug(TAG, " Parsing tag: " + tagName);
 
-    private LoginResult getMockLoginResult(String userName, String password) {
-        //data = data.substring(url.indexOf(",")) - remove web URI
-        if (!userName.equals("test") || !password.equals("test")) {
-            LoginResult result = new LoginResult();
-            result.setError("Invalid user name or password");
-            return result;
+        int tagNamePositionEnd = data.indexOf(tagName + TAG_END_MARKER) + tagName.length() + TAG_END_MARKER.length();
+        if (tagNamePositionEnd == -1) {
+            throw new AppException(tagName + " : tag not found");
         }
 
-        String jsonAssetPath = "mock.json";
+        int tagDataPositionStart = data.indexOf(TAG_MARKER, tagNamePositionEnd) + TAG_MARKER.length();
+        if (tagDataPositionStart == -1) {
+            throw new AppException(tagName + " : tag data not found");
+        }
 
-        String json = readJSONFromAsset(FaceAuthApp.Companion.getApp(), jsonAssetPath);
-        return new Gson().fromJson(json, LoginResult.class);
+        int tagDataPositionEnd = data.indexOf(TAG_MARKER, tagDataPositionStart);
+        if (tagDataPositionEnd == -1) {
+            throw new AppException(tagName + " : tag data end not found");
+        }
+
+        String tagValue = data.substring(tagDataPositionStart, tagDataPositionEnd);
+        LoggerInstance.get().debug(TAG, " Tag parsed, value : " + tagValue);
+        return tagValue;
     }
 
-    private String readJSONFromAsset(Context context, String jsonFilename) {
-        String json = null;
-        try {
-            InputStream is = context.getAssets().open(jsonFilename);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
+    private String parseImageTag(String data, String imageTagName) {
+        LoggerInstance.get().debug(TAG, " Parsing image tag: " + imageTagName);
+
+        int tagNamePositionEnd = data.indexOf(imageTagName + TAG_END_MARKER) + imageTagName.length() + TAG_END_MARKER.length();
+        if (tagNamePositionEnd == -1) {
+            throw new AppException(imageTagName + " : tag not found");
         }
-        return json;
+
+        String base64Marker = "base64,";
+        int tagDataPositionStart = data.indexOf(base64Marker, tagNamePositionEnd) + base64Marker.length();
+        if (tagDataPositionStart == -1) {
+            throw new AppException(imageTagName + " : tag data not found");
+        }
+
+        int tagDataPositionEnd = data.indexOf(TAG_MARKER, tagDataPositionStart);
+        if (tagDataPositionEnd == -1) {
+            throw new AppException(imageTagName + " : tag data end not found");
+        }
+
+        String tagValue = data.substring(tagDataPositionStart, tagDataPositionEnd).trim();
+        LoggerInstance.get().debug(TAG, " Image tag parsed");
+        return tagValue;
     }
 
 }

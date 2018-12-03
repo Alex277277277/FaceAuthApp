@@ -43,7 +43,7 @@ public class LoginViewModel extends BaseViewModel {
 
         showLoading(R.string.signing_in);
         subscribe(Single
-                .fromCallable(() -> apiManager.login(mContext, userName, password))
+                .fromCallable(() -> apiManager.login(userName, password))
                 .toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
