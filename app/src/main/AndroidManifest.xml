@@ -27,7 +27,10 @@
 
         </activity>
 
-        <activity android:name=".face.FaceAuthActivity" />
+        <activity
+            android:name=".face.FaceAuthActivity"
+            android:screenOrientation="portrait">
+        </activity>
 
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
     </application>
