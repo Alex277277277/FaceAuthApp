@@ -1,82 +1,82 @@
 package com.auth.face.faceauth;
 
+import android.text.TextUtils;
+
 import com.auth.face.faceauth.base.AppException;
 import com.auth.face.faceauth.logger.LoggerInstance;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
 
 public class ApiManager {
 
     private static final String TAG = FaceAuthApp.Companion.getTAG() + ":" + ApiManager.class.getSimpleName();
 
-    private static final String LOGIN_URL = "http://testportalapp2.azurewebsites.net/api/user?uId=2122";
-    private static final String TAG_MARKER = "\\\"";
-    private static final String TAG_END_MARKER = "\\\":";
+    private static final String LOGIN_URL = "http://testportalapp3.azurewebsites.net/api/user?uId=%s";
 
     public LoginResult login(String userName, String password) {
         LoginResult loginResult = new LoginResult();
         try {
             HttpCommunicator httpCommunicator = new HttpCommunicator();
-            String httpResponse = httpCommunicator.loginRequest(LOGIN_URL, userName, password);
-            return parseLoginResponse(httpResponse);
+
+            String userNameEncoded = URLEncoder.encode(userName, "UTF-8");
+            String url = String.format(LOGIN_URL, userNameEncoded);
+            String httpResponse = httpCommunicator.loginRequest(url, userName, password);
+            return parseJson(httpResponse);
         } catch (AppException e) {
             LoggerInstance.get().error(TAG, " Login failed: ", e);
             loginResult.setError(e.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            LoggerInstance.get().error(TAG, " Login failed: ", e);
         }
         return loginResult;
     }
 
-    private LoginResult parseLoginResponse(String loginResponse) {
-        LoginResult loginResult = new LoginResult();
-        loginResult.setBase64Photo(parseImageTag(loginResponse, "image"));
-        loginResult.setUsername(parseTag(loginResponse, "name"));
-        loginResult.setDob(parseTag(loginResponse, "dob"));
-        return loginResult;
+    private LoginResult parseJson(String json) {
+        try {
+            JsonArray topArrayJsonObject = getTopArrayJsonObject("image", json);
+            List<LoginResult> resultList =
+                    new Gson().fromJson(
+                            topArrayJsonObject,
+                            new TypeToken<List<LoginResult>>() {
+                            }.getType()
+                    );
+            LoginResult result = resultList.get(0);
+
+            if (TextUtils.isEmpty(result.getUsername())) {
+                throw new AppException("Unable to parse user name from the server response");
+            }
+            if (TextUtils.isEmpty(result.getDob())) {
+                throw new AppException("Unable to parse DOB from the server response");
+            }
+            if (TextUtils.isEmpty(result.getBase64Photo())) {
+                throw new AppException("Unable to parse base64 photo from the server response");
+            }
+
+            String marker = "base64,";
+            String webBase64Str = result.getBase64Photo();
+            int dataPosition = webBase64Str.indexOf(marker) + marker.length();
+            String base64Image = webBase64Str.substring(dataPosition);
+            result.setBase64Photo(base64Image);
+            return result;
+        } catch (AppException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AppException("Unable to parse server response");
+        }
     }
 
-    private String parseTag(String data, String tagName) {
-        LoggerInstance.get().debug(TAG, " Parsing tag: " + tagName);
-
-        int tagNamePositionEnd = data.indexOf(tagName + TAG_END_MARKER) + tagName.length() + TAG_END_MARKER.length();
-        if (tagNamePositionEnd == -1) {
-            throw new AppException(tagName + " : tag not found");
-        }
-
-        int tagDataPositionStart = data.indexOf(TAG_MARKER, tagNamePositionEnd) + TAG_MARKER.length();
-        if (tagDataPositionStart == -1) {
-            throw new AppException(tagName + " : tag data not found");
-        }
-
-        int tagDataPositionEnd = data.indexOf(TAG_MARKER, tagDataPositionStart);
-        if (tagDataPositionEnd == -1) {
-            throw new AppException(tagName + " : tag data end not found");
-        }
-
-        String tagValue = data.substring(tagDataPositionStart, tagDataPositionEnd);
-        LoggerInstance.get().debug(TAG, " Tag parsed, value : " + tagValue);
-        return tagValue;
-    }
-
-    private String parseImageTag(String data, String imageTagName) {
-        LoggerInstance.get().debug(TAG, " Parsing image tag: " + imageTagName);
-
-        int tagNamePositionEnd = data.indexOf(imageTagName + TAG_END_MARKER) + imageTagName.length() + TAG_END_MARKER.length();
-        if (tagNamePositionEnd == -1) {
-            throw new AppException(imageTagName + " : tag not found");
-        }
-
-        String base64Marker = "base64,";
-        int tagDataPositionStart = data.indexOf(base64Marker, tagNamePositionEnd) + base64Marker.length();
-        if (tagDataPositionStart == -1) {
-            throw new AppException(imageTagName + " : tag data not found");
-        }
-
-        int tagDataPositionEnd = data.indexOf(TAG_MARKER, tagDataPositionStart);
-        if (tagDataPositionEnd == -1) {
-            throw new AppException(imageTagName + " : tag data end not found");
-        }
-
-        String tagValue = data.substring(tagDataPositionStart, tagDataPositionEnd).trim();
-        LoggerInstance.get().debug(TAG, " Image tag parsed");
-        return tagValue;
+    private JsonArray getTopArrayJsonObject(String topName, String jsonStr) {
+        Gson gson = new Gson();
+        JsonElement jsonTopLevelEl = gson.fromJson(jsonStr, JsonElement.class);
+        JsonObject jsonTopLevelObject = jsonTopLevelEl.getAsJsonObject();
+        return jsonTopLevelObject.getAsJsonArray(topName);
     }
 
 }
