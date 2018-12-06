@@ -168,9 +168,20 @@ class FaceAuthActivity : AppCompatActivity() {
         Utils.blinkView(vStateGreen, false)
 
         when (state) {
-            FaceState.VERIFYING -> Utils.blinkView(vStateOrange, true)
-            FaceState.MATCH -> Utils.blinkView(vStateGreen, true)
-            FaceState.FAILURE -> Utils.blinkView(vStateRed, true)
+            FaceState.VERIFYING -> {
+                Utils.blinkView(vStateOrange, true)
+                Utils.blinkView(vStateRed, true)
+            }
+            FaceState.MATCH -> {
+                Utils.blinkView(vStateGreen, true)
+            }
+            FaceState.FAILURE -> {
+                Utils.blinkView(vStateRed, true)
+            }
+            FaceState.WAITING -> {
+                Utils.blinkView(vStateRed, true)
+            }
+
         }
     }
 
