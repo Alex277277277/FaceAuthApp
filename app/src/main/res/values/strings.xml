@@ -10,19 +10,28 @@
     -->
 
     <string name="sign_in">Sign In</string>
+    <string name="register">Register</string>
     <string name="username">User name</string>
     <string name="password">Password</string>
+    <string name="password_confirm">Confirm password</string>
     <string name="signing_in">Signing in</string>
+    <string name="registering">Registering</string>
 
     <string name="label_username">Name  :</string>
     <string name="label_dob">D.O.B. :</string>
 
     <string name="err_empty_username">User name is empty</string>
     <string name="err_empty_password">Password is empty</string>
+    <string name="err_passwords_not_match">Passwords not match</string>
     <string name="err_connection">Unable to connect to the server</string>
     <string name="err_login_failed">Login request failed</string>
+    <string name="err_register_failed">Registration request failed</string>
     <string name="err_face_not_detected">Unable to detect face on photo</string>
     <string name="err_detection">Face detection request failed</string>
 
     <string name="photo_face_detection">Trying to detect face on photo...</string>
+
+    <string name="mati_client_id">5c33ca47daf37d019f184991</string>
+    <!--<string name="mati_client_id">5c361435cad5b4133ea945f1</string>-->
+
 </resources>

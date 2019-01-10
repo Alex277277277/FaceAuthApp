@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Credentials;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -27,11 +28,18 @@ public class HttpCommunicator {
                 .build();
     }
 
-    public String loginRequest(String url, String username, String password) {
-        LoggerInstance.get().info(TAG, "Login http request...");
+    public String httpRequest(String url, String username, String password) {
+        return httpRequest(url, username, password, false);
+    }
+
+    public String httpRequest(String url, String username, String password, boolean isPost) {
+        LoggerInstance.get().info(TAG, "Http request...");
         Request.Builder requestBuilder = new Request.Builder().url(url);
         if (username != null && password != null) {
             requestBuilder.addHeader("Authorization", Credentials.basic(username,password));
+        }
+        if (isPost) {
+            requestBuilder.post(new FormBody.Builder().build());
         }
 
         Response response = null;

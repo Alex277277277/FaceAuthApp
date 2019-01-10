@@ -7,6 +7,7 @@ import com.auth.face.faceauth.logger.LoggerInstance
 import com.auth.face.faceauth.logger.FileLogger
 import com.auth.face.faceauth.logger.AndroidLogger
 import com.auth.face.faceauth.logger.CompositeLogger
+import com.matilock.mati_kyc_sdk.Mati
 import java.io.File
 
 
@@ -19,6 +20,8 @@ class FaceAuthApp : Application() {
         app = this
         sPrefs = PrefStorage(this)
         initializeLogger()
+
+        Mati.init(this, getString(R.string.mati_client_id));
     }
 
     fun getPrefs(): PrefStorage {

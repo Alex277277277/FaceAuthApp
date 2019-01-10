@@ -7,7 +7,7 @@
     tools:context="com.auth.face.faceauth.login.LoginActivity">
 
     <LinearLayout
-        android:id="@+id/llSignIn"
+        android:id="@+id/llRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -43,24 +43,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
+            android:inputType="textPassword" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"
+            android:text="@string/password_confirm" />
+
+        <EditText
+            android:id="@+id/etUserPasswordConfirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
             android:inputType="textPassword"
             android:imeOptions="actionDone" />
-
-        <Button
-            android:id="@+id/btSignIn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:padding="16dp"
-            android:layout_gravity="center"
-            android:textSize="22sp"
-            android:text="@string/sign_in" />
 
         <Button
             android:id="@+id/btRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:padding="16dp"
             android:layout_gravity="center"
             android:textSize="22sp"

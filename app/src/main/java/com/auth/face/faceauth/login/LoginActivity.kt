@@ -23,6 +23,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         btSignIn.setOnClickListener { v -> viewModel.login(etUserName.text.toString(), etUserPassword.text.toString()) }
+        btRegister.setOnClickListener { v -> navigateToRegisterScreen() }
         etUserPassword.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
@@ -61,6 +62,11 @@ class LoginActivity : AppCompatActivity() {
         intent = Intent(this, FaceAuthActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    private fun navigateToRegisterScreen() {
+        intent = Intent(this, RegisterActivity::class.java)
+        startActivity(intent)
     }
 
     private fun requestCameraPermissionIfNeeded() {

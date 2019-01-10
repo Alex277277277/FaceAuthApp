@@ -19,6 +19,27 @@ public class ApiManager {
     private static final String TAG = FaceAuthApp.Companion.getTAG() + ":" + ApiManager.class.getSimpleName();
 
     private static final String LOGIN_URL = "http://testportalapp3.azurewebsites.net/api/user?uId=%s";
+    private static final String REGISTER_URL = "https://testportalapp3.azurewebsites.net/api/generator?name=%s&pass=%s";
+
+    public RegisterResult register(String userName, String password) {
+        RegisterResult registerResult = new RegisterResult();
+        password = "yesMan";    // hardcoded
+        try {
+            HttpCommunicator httpCommunicator = new HttpCommunicator();
+
+            String userNameEncoded = URLEncoder.encode(userName, "UTF-8");
+            String passwordEncoded = URLEncoder.encode(password, "UTF-8");
+            String url = String.format(REGISTER_URL, userNameEncoded, passwordEncoded);
+            String httpResponse = httpCommunicator.httpRequest(url, userName, password, true);
+            registerResult.setUniqueId(httpResponse.substring(1, httpResponse.length() - 1));
+        }  catch (AppException e) {
+            LoggerInstance.get().error(TAG, " Registration failed: ", e);
+            registerResult.setError(e.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            LoggerInstance.get().error(TAG, " Login failed: ", e);
+        }
+        return registerResult;
+    }
 
     public LoginResult login(String userName, String password) {
         LoginResult loginResult = new LoginResult();
@@ -27,7 +48,7 @@ public class ApiManager {
 
             String userNameEncoded = URLEncoder.encode(userName, "UTF-8");
             String url = String.format(LOGIN_URL, userNameEncoded);
-            String httpResponse = httpCommunicator.loginRequest(url, userName, password);
+            String httpResponse = httpCommunicator.httpRequest(url, userName, password);
             return parseJson(httpResponse);
         } catch (AppException e) {
             LoggerInstance.get().error(TAG, " Login failed: ", e);
