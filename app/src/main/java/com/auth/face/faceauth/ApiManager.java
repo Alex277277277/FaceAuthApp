@@ -23,14 +23,14 @@ public class ApiManager {
 
     public RegisterResult register(String userName, String password) {
         RegisterResult registerResult = new RegisterResult();
-        password = "yesMan";    // hardcoded
+        String passwordForBasicAuth = "yesMan";    // hardcoded
         try {
             HttpCommunicator httpCommunicator = new HttpCommunicator();
 
             String userNameEncoded = URLEncoder.encode(userName, "UTF-8");
             String passwordEncoded = URLEncoder.encode(password, "UTF-8");
             String url = String.format(REGISTER_URL, userNameEncoded, passwordEncoded);
-            String httpResponse = httpCommunicator.httpRequest(url, userName, password, true);
+            String httpResponse = httpCommunicator.httpRequest(url, userName, passwordForBasicAuth, true);
             registerResult.setUniqueId(httpResponse.substring(1, httpResponse.length() - 1));
         }  catch (AppException e) {
             LoggerInstance.get().error(TAG, " Registration failed: ", e);

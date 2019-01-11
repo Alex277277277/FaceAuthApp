@@ -33,7 +33,7 @@ public class HttpCommunicator {
     }
 
     public String httpRequest(String url, String username, String password, boolean isPost) {
-        LoggerInstance.get().info(TAG, "Http request...");
+        LoggerInstance.get().info(TAG, "Http request... " + url);
         Request.Builder requestBuilder = new Request.Builder().url(url);
         if (username != null && password != null) {
             requestBuilder.addHeader("Authorization", Credentials.basic(username,password));
