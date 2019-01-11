@@ -30,9 +30,14 @@ public class RegisterViewModel extends BaseViewModel {
         apiManager = new ApiManager();
     }
 
-    public void register(String userName, String password, String confirmPassword) {
+    public void register(String userName, String email, String password, String confirmPassword) {
         if (TextUtils.isEmpty(userName)) {
             Toast.makeText(mContext, R.string.err_empty_username, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(mContext, R.string.err_empty_email, Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -48,7 +53,7 @@ public class RegisterViewModel extends BaseViewModel {
 
         showLoading(R.string.registering);
         subscribe(Single
-                .fromCallable(() -> apiManager.register(userName, password))
+                .fromCallable(() -> apiManager.register(userName, email, password))
                 .toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

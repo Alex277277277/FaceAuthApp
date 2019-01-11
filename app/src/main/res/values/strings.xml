@@ -12,6 +12,7 @@
     <string name="sign_in">Sign In</string>
     <string name="register">Register</string>
     <string name="username">User name</string>
+    <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="password_confirm">Confirm password</string>
     <string name="signing_in">Signing in</string>
@@ -21,6 +22,7 @@
     <string name="label_dob">D.O.B. :</string>
 
     <string name="err_empty_username">User name is empty</string>
+    <string name="err_empty_email">Email is empty</string>
     <string name="err_empty_password">Password is empty</string>
     <string name="err_passwords_not_match">Passwords not match</string>
     <string name="err_connection">Unable to connect to the server</string>

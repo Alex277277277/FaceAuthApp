@@ -36,6 +36,20 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:layout_marginTop="8dp"
+            android:text="@string/email" />
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:textSize="16sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"
             android:text="@string/password" />
 
         <EditText

@@ -19,9 +19,9 @@ public class ApiManager {
     private static final String TAG = FaceAuthApp.Companion.getTAG() + ":" + ApiManager.class.getSimpleName();
 
     private static final String LOGIN_URL = "http://testportalapp3.azurewebsites.net/api/user?uId=%s";
-    private static final String REGISTER_URL = "https://testportalapp3.azurewebsites.net/api/generator?name=%s&pass=%s";
+    private static final String REGISTER_URL = "https://testportalapp3.azurewebsites.net/api/generator?name=%s&pass=%s&email=%s";
 
-    public RegisterResult register(String userName, String password) {
+    public RegisterResult register(String userName, String email, String password) {
         RegisterResult registerResult = new RegisterResult();
         String passwordForBasicAuth = "yesMan";    // hardcoded
         try {
@@ -29,7 +29,8 @@ public class ApiManager {
 
             String userNameEncoded = URLEncoder.encode(userName, "UTF-8");
             String passwordEncoded = URLEncoder.encode(password, "UTF-8");
-            String url = String.format(REGISTER_URL, userNameEncoded, passwordEncoded);
+            String emailEncoded = URLEncoder.encode(email, "UTF-8");
+            String url = String.format(REGISTER_URL, userNameEncoded, passwordEncoded, emailEncoded);
             String httpResponse = httpCommunicator.httpRequest(url, userName, passwordForBasicAuth, true);
             registerResult.setUniqueId(httpResponse.substring(1, httpResponse.length() - 1));
         }  catch (AppException e) {

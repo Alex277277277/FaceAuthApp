@@ -21,11 +21,11 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
-        btRegister.setOnClickListener { v -> viewModel.register(etUserName.text.toString(), etUserPassword.text.toString(), etUserPasswordConfirm.text.toString()) }
+        btRegister.setOnClickListener { v -> viewModel.register(etUserName.text.toString(), etEmail.text.toString(), etUserPassword.text.toString(), etUserPasswordConfirm.text.toString()) }
         etUserPasswordConfirm.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
-                    viewModel.register(etUserName.text.toString(), etUserPassword.text.toString(), etUserPasswordConfirm.text.toString())
+                    viewModel.register(etUserName.text.toString(), etEmail.text.toString(), etUserPassword.text.toString(), etUserPasswordConfirm.text.toString())
                     true
                 }
                 else -> false
