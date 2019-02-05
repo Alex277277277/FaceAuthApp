@@ -36,6 +36,11 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity
+            android:name=".promo.PromotionActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
     </application>
 

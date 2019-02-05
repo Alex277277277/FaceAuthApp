@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Face Auth</string>
+    <string name="app_name">iID</string>
 
     <string name="subscription_key">6a258339e51b49828cd52e10094a583f</string>
     <string name="endpoint">https://westeurope.api.cognitive.microsoft.com/face/v1.0</string>

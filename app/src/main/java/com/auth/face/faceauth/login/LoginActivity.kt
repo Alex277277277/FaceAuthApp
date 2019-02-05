@@ -15,6 +15,8 @@ import android.widget.Toast
 import com.auth.face.faceauth.face.FaceAuthActivity
 import com.auth.face.faceauth.R
 import com.auth.face.faceauth.base.Utils
+import com.auth.face.faceauth.navigation.RegisterScreenRouter
+import com.auth.face.faceauth.navigation.Router
 
 class LoginActivity : AppCompatActivity() {
 
@@ -24,7 +26,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         btSignIn.setOnClickListener { v -> viewModel.login(etUserName.text.toString(), etUserPassword.text.toString()) }
-        btRegister.setOnClickListener { v -> navigateToRegisterScreen() }
+        btRegister.setOnClickListener { v -> RegisterScreenRouter().route(this) }
         etUserPassword.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
@@ -43,7 +45,7 @@ class LoginActivity : AppCompatActivity() {
     private fun initializeViewModel() {
         viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
         viewModel.getLoadingResId().observe(this, Observer(this::setLoading));
-        viewModel.getRouter().observe(this, Observer { v -> navigateToFaceAuthScreen() })
+        viewModel.getRouter().observe(this, Observer { router -> router?.route(this) })
     }
 
     private fun setLoading(loading: Int?) {
@@ -58,17 +60,6 @@ class LoginActivity : AppCompatActivity() {
                 tvInfoText.text = getString(loading)
             }
         }
-    }
-
-    private fun navigateToFaceAuthScreen() {
-        intent = Intent(this, FaceAuthActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun navigateToRegisterScreen() {
-        intent = Intent(this, RegisterActivity::class.java)
-        startActivity(intent)
     }
 
     private fun requestCameraPermissionIfNeeded() {

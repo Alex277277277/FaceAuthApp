@@ -20,6 +20,10 @@ class PrefStorage(context: Context) {
         get() = sharedPreferences.getString(KEY_DOB, "")
         set(dob) = applyString(KEY_DOB, dob)
 
+    var promoImage: String
+        get() = sharedPreferences.getString(KEY_PROMOTION_IMAGE, "")
+        set(photo) = applyString(KEY_PROMOTION_IMAGE, photo)
+
     init {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     }
@@ -35,6 +39,7 @@ class PrefStorage(context: Context) {
         private val KEY_PHOTO = "key_photo"
         private val KEY_USERNAME = "key_username"
         private val KEY_DOB = "key_dob"
+        private val KEY_PROMOTION_IMAGE = "key_promo_image"
     }
 
 }

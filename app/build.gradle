@@ -40,6 +40,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     implementation 'com.google.android.gms:play-services-vision:11.0.4+'
+    implementation 'com.google.android.gms:play-services-location:11.0.4+'
 
     implementation 'com.matilock:mati-global-id-sdk:0.0.3'
 

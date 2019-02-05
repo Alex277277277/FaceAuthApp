@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.auth.face.faceauth.base.AppException;
 import com.auth.face.faceauth.logger.LoggerInstance;
+import com.auth.face.faceauth.promo.PromotionResult;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -20,6 +21,8 @@ public class ApiManager {
 
     private static final String LOGIN_URL = "http://testportalapp3.azurewebsites.net/api/user?uId=%s";
     private static final String REGISTER_URL = "https://testportalapp3.azurewebsites.net/api/generator?name=%s&pass=%s&email=%s";
+
+    private static final String PROMOTION_URL = "http://testportalapp3.azurewebsites.net/api/promotion?xcord=%s&ycord=%s";
 
     public RegisterResult register(String userName, String email, String password) {
         RegisterResult registerResult = new RegisterResult();
@@ -58,6 +61,21 @@ public class ApiManager {
             LoggerInstance.get().error(TAG, " Login failed: ", e);
         }
         return loginResult;
+    }
+
+    public PromotionResult getPromotion(double lat, double lng) {
+        PromotionResult promotionResult = new PromotionResult();
+        try {
+            HttpCommunicator httpCommunicator = new HttpCommunicator();
+
+            String url = String.format(PROMOTION_URL, String.valueOf(lat), String.valueOf(lng));
+            String httpResponse = httpCommunicator.httpRequest(url, null, null);
+            return parsePromotionJson(httpResponse);
+        } catch (AppException e) {
+            LoggerInstance.get().error(TAG, " Login failed: ", e);
+            promotionResult.setError(e.getMessage());
+        }
+        return promotionResult;
     }
 
     private LoginResult parseJson(String json) {
@@ -99,6 +117,34 @@ public class ApiManager {
         JsonElement jsonTopLevelEl = gson.fromJson(jsonStr, JsonElement.class);
         JsonObject jsonTopLevelObject = jsonTopLevelEl.getAsJsonObject();
         return jsonTopLevelObject.getAsJsonArray(topName);
+    }
+
+    private PromotionResult parsePromotionJson(String json) {
+        try {
+            JsonArray topArrayJsonObject = getTopArrayJsonObject("image", json);
+            List<PromotionResult> resultList =
+                    new Gson().fromJson(
+                            topArrayJsonObject,
+                            new TypeToken<List<PromotionResult>>() {
+                            }.getType()
+                    );
+            PromotionResult result = resultList.get(0);
+
+            if (TextUtils.isEmpty(result.getBase64Photo())) {
+                throw new AppException("Unable to parse base64 photo from the server response");
+            }
+
+            String marker = "base64,";
+            String webBase64Str = result.getBase64Photo();
+            int dataPosition = webBase64Str.indexOf(marker) + marker.length();
+            String base64Image = webBase64Str.substring(dataPosition);
+            result.setBase64Photo(base64Image);
+            return result;
+        } catch (AppException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AppException("Unable to parse server response");
+        }
     }
 
 }

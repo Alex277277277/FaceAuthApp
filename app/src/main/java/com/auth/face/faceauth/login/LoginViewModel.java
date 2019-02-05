@@ -9,6 +9,10 @@ import com.auth.face.faceauth.ApiManager;
 import com.auth.face.faceauth.FaceAuthApp;
 import com.auth.face.faceauth.LoginResult;
 import com.auth.face.faceauth.PrefStorage;
+import com.auth.face.faceauth.navigation.FaceScreenRouter;
+import com.auth.face.faceauth.navigation.PromoScreenRouter;
+import com.auth.face.faceauth.navigation.Router;
+import com.auth.face.faceauth.promo.PromotionResult;
 import com.auth.face.faceauth.R;
 import com.auth.face.faceauth.base.BaseViewModel;
 import com.auth.face.faceauth.logger.LoggerInstance;
@@ -21,7 +25,7 @@ public class LoginViewModel extends BaseViewModel {
 
     private static final String TAG = FaceAuthApp.Companion.getTAG() + ":" + LoginViewModel.class.getSimpleName();
 
-    private final MutableLiveData<Void> router = new MutableLiveData<>();
+    private final MutableLiveData<Router> router = new MutableLiveData<>();
 
     private ApiManager apiManager;
 
@@ -81,7 +85,7 @@ public class LoginViewModel extends BaseViewModel {
         prefs.setUsername(username);
         prefs.setDob(dob);
 
-        router.setValue(null);
+        getPromotion();
     }
 
     private void onLoginFailed(Throwable t) {
@@ -89,7 +93,35 @@ public class LoginViewModel extends BaseViewModel {
         Toast.makeText(mContext, R.string.err_connection , Toast.LENGTH_LONG).show();
     }
 
-    public MutableLiveData<Void> getRouter() {
+    private void getPromotion() {
+        showLoading(R.string.signing_in);
+        subscribe(Single
+                .fromCallable(() -> apiManager.getPromotion(1234, 1234))
+                .toObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::onPromotionSuccess, this::onPromotionFailed)
+        );
+    }
+
+    private void onPromotionSuccess(PromotionResult promotionResult) {
+        hideLoading();
+        String photoBase64 = promotionResult.getBase64Photo();
+        if (!TextUtils.isEmpty(photoBase64)) {
+            PrefStorage prefs = FaceAuthApp.Companion.getApp().getPrefs();
+            prefs.setPromoImage(photoBase64);
+            router.setValue(new PromoScreenRouter());
+            return;
+        }
+        router.setValue(new FaceScreenRouter());
+    }
+
+    private void onPromotionFailed(Throwable t) {
+        hideLoading();
+        router.setValue(new FaceScreenRouter());
+    }
+
+    public MutableLiveData<Router> getRouter() {
         return router;
     }
 
