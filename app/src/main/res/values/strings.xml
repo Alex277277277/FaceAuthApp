@@ -33,7 +33,13 @@
 
     <string name="photo_face_detection">Trying to detect face on photo...</string>
 
-    <string name="mati_client_id">5c33ca47daf37d019f184991</string>
+    <!-- Old / unused -->
+    <!--<string name="mati_client_id">5c33ca47daf37d019f184991</string>-->
+
+    <!-- Production -->
+    <string name="mati_client_id">5c4a118d5fc7fb7bfaf50507</string>
+
+    <!-- for Testing -->
     <!--<string name="mati_client_id">5c361435cad5b4133ea945f1</string>-->
 
 </resources>
