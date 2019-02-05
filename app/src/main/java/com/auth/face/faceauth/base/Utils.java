@@ -1,6 +1,10 @@
 package com.auth.face.faceauth.base;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -37,6 +41,15 @@ public class Utils {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public static boolean checkSelfPermissions(@NonNull String[] permissions, @NonNull Context context) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

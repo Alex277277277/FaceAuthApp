@@ -1,15 +1,20 @@
 package com.auth.face.faceauth.login;
 
+import android.Manifest;
 import android.app.Application;
 import android.arch.lifecycle.MutableLiveData;
+import android.location.Location;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.auth.face.faceauth.ApiManager;
 import com.auth.face.faceauth.FaceAuthApp;
+import com.auth.face.faceauth.LocationController;
 import com.auth.face.faceauth.LoginResult;
 import com.auth.face.faceauth.PrefStorage;
 import com.auth.face.faceauth.QrCodeResult;
+import com.auth.face.faceauth.base.LocationReadyListener;
+import com.auth.face.faceauth.base.Utils;
 import com.auth.face.faceauth.navigation.FaceScreenRouter;
 import com.auth.face.faceauth.navigation.PromoScreenRouter;
 import com.auth.face.faceauth.navigation.Router;
@@ -17,6 +22,8 @@ import com.auth.face.faceauth.promo.PromotionResult;
 import com.auth.face.faceauth.R;
 import com.auth.face.faceauth.base.BaseViewModel;
 import com.auth.face.faceauth.logger.LoggerInstance;
+
+import org.jetbrains.annotations.NotNull;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -29,6 +36,8 @@ public class LoginViewModel extends BaseViewModel {
     private final MutableLiveData<Router> router = new MutableLiveData<>();
 
     private ApiManager apiManager;
+    private double lat;
+    private double lng;
 
     public LoginViewModel(Application application) {
         super(application);
@@ -97,7 +106,7 @@ public class LoginViewModel extends BaseViewModel {
     private void getPromotion() {
         showLoading(R.string.signing_in);
         subscribe(Single
-                .fromCallable(() -> apiManager.getPromotion(1234, 1234))
+                .fromCallable(() -> apiManager.getPromotion(lat, lng))
                 .toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -163,6 +172,29 @@ public class LoginViewModel extends BaseViewModel {
 
     public MutableLiveData<Router> getRouter() {
         return router;
+    }
+
+    public void requestCurrentLocation() {
+        String[] locationPermission = new String[] {Manifest.permission.ACCESS_FINE_LOCATION};
+        if (!Utils.checkSelfPermissions(locationPermission, mContext)) {
+            Toast.makeText(mContext, R.string.err_location_permissions, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (!LocationController.isLocationServiceEnabled(mContext)) {
+            Toast.makeText(mContext, R.string.err_location_disabled, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        LocationController locationController = new LocationController(mContext, new LocationReadyListener() {
+            @Override
+            public void onReady(@NotNull Location location) {
+                lat = location.getLatitude();
+                lng = location.getLongitude();
+            }
+        });
+
+        locationController.requestCurrentLocation();
     }
 
 }

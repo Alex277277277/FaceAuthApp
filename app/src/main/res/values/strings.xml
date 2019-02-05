@@ -30,6 +30,8 @@
     <string name="err_register_failed">Registration request failed</string>
     <string name="err_face_not_detected">Unable to detect face on photo</string>
     <string name="err_detection">Face detection request failed</string>
+    <string name="err_location_permissions">Location is not available, please grant location permissions</string>
+    <string name="err_location_disabled">Location access is disabled, please enable access in device settings</string>
 
     <string name="photo_face_detection">Trying to detect face on photo...</string>
 

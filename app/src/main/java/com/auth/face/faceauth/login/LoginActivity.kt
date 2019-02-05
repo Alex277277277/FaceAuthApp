@@ -14,7 +14,6 @@ import android.widget.Toast
 import com.auth.face.faceauth.R
 import com.auth.face.faceauth.base.Utils
 import com.auth.face.faceauth.navigation.RegisterScreenRouter
-import android.support.v4.content.ContextCompat
 
 class LoginActivity : AppCompatActivity() {
 
@@ -39,6 +38,7 @@ class LoginActivity : AppCompatActivity() {
         initializeViewModel()
 
         requestPermissionsIfNeeded()
+        viewModel.requestCurrentLocation()
     }
 
     private fun initializeViewModel() {
@@ -62,18 +62,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun requestPermissionsIfNeeded() {
-        if (!checkSelfPermissions()) {
+        if (!Utils.checkSelfPermissions(permissions, this)) {
             ActivityCompat.requestPermissions(this, permissions, RC_HANDLE_PERM)
         }
-    }
-
-    fun checkSelfPermissions(): Boolean {
-        for (permission in permissions) {
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                return false
-            }
-        }
-        return true
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -85,7 +76,10 @@ class LoginActivity : AppCompatActivity() {
         if (grantResults.size == 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Camera permission is not granted", Toast.LENGTH_LONG).show()
             finish()
+            return
         }
+
+        viewModel.requestCurrentLocation()
     }
 
     companion object {

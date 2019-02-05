@@ -43,7 +43,6 @@
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:textSize="16dp"
-                android:text="Jack"
                 tools:ignore="SpUsage">
 
                 <requestFocus />
@@ -64,7 +63,6 @@
                 android:textSize="16dp"
                 android:inputType="textPassword"
                 android:imeOptions="actionDone"
-                android:text="yesMan"
                 tools:ignore="SpUsage" />
 
             <TextView
