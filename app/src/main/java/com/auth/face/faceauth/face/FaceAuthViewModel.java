@@ -49,6 +49,7 @@ public class FaceAuthViewModel extends BaseViewModel {
     private final MutableLiveData<Bitmap> userPhoto = new MutableLiveData<>();
     private final MutableLiveData<String> username = new MutableLiveData<>();
     private final MutableLiveData<String> dob = new MutableLiveData<>();
+    private final MutableLiveData<Bitmap> qrCode = new MutableLiveData<>();
 
     private final MutableLiveData<FaceState> faceState = new MutableLiveData<>();
     private final MutableLiveData<Integer> infoTextResId = new MutableLiveData<>();
@@ -67,6 +68,10 @@ public class FaceAuthViewModel extends BaseViewModel {
 
     public MutableLiveData<String> getDob() {
         return dob;
+    }
+
+    public MutableLiveData<Bitmap> getQrCode() {
+        return qrCode;
     }
 
     public MutableLiveData<Integer> getInfoTextResId() {
@@ -108,6 +113,11 @@ public class FaceAuthViewModel extends BaseViewModel {
 
         username.setValue(prefs.getUsername());
         dob.setValue(prefs.getDob());
+
+        String qrCodeBase64Photo = prefs.getQrCode();
+        byte[] qrCodePhotoData = Utils.fromBase64(qrCodeBase64Photo);
+        Bitmap qrCodeBitmap = BitmapFactory.decodeByteArray(qrCodePhotoData, 0, qrCodePhotoData.length);
+        qrCode.setValue(qrCodeBitmap);
     }
 
     private void detectFaceOnPhoto() {
@@ -180,6 +190,7 @@ public class FaceAuthViewModel extends BaseViewModel {
         if (verifyResult.isIdentical) {
             LoggerInstance.get().debug(TAG, "onFaceVerificationSuccess -> FACES MATCH");
             faceState.setValue(FaceState.MATCH);
+            infoTextResId.setValue(-1);
             postWaitingStateDelayed(INTERVAL_MATCH);
         } else {
             LoggerInstance.get().debug(TAG, "onFaceVerificationSuccess -> FACES DON'T MATCH");
@@ -195,7 +206,10 @@ public class FaceAuthViewModel extends BaseViewModel {
     }
 
     private void postWaitingStateDelayed(long delay) {
-        new Handler().postDelayed(() -> faceState.setValue(FaceState.WAITING), delay);
+        new Handler().postDelayed(() -> {
+            infoTextResId.setValue(0);
+            faceState.setValue(FaceState.WAITING);
+        }, delay);
     }
 
 }

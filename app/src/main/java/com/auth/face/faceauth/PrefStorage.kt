@@ -21,8 +21,16 @@ class PrefStorage(context: Context) {
         set(dob) = applyString(KEY_DOB, dob)
 
     var promoImage: String
-        get() = sharedPreferences.getString(KEY_PROMOTION_IMAGE, "")
-        set(photo) = applyString(KEY_PROMOTION_IMAGE, photo)
+        get() = sharedPreferences.getString(KEY_PROMO_IMAGE, "")
+        set(photo) = applyString(KEY_PROMO_IMAGE, photo)
+
+    var promoId: String
+        get() = sharedPreferences.getString(KEY_PROMO_ID, "")
+        set(promoId) = applyString(KEY_PROMO_ID, promoId)
+
+    var qrCode: String
+        get() = sharedPreferences.getString(KEY_QR_CODE, "")
+        set(photo) = applyString(KEY_QR_CODE, photo)
 
     init {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -39,7 +47,9 @@ class PrefStorage(context: Context) {
         private val KEY_PHOTO = "key_photo"
         private val KEY_USERNAME = "key_username"
         private val KEY_DOB = "key_dob"
-        private val KEY_PROMOTION_IMAGE = "key_promo_image"
+        private val KEY_PROMO_IMAGE = "key_promo_image"
+        private val KEY_PROMO_ID = "key_promo_id"
+        private val KEY_QR_CODE = "key_qr_code"
     }
 
 }

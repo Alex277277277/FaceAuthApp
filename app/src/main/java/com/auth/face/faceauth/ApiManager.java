@@ -23,6 +23,7 @@ public class ApiManager {
     private static final String REGISTER_URL = "https://testportalapp3.azurewebsites.net/api/generator?name=%s&pass=%s&email=%s";
 
     private static final String PROMOTION_URL = "http://testportalapp3.azurewebsites.net/api/promotion?xcord=%s&ycord=%s";
+    private static final String QR_CODE_URL = "http://testportalapp3.azurewebsites.net/api/qrcode/?id=%s";
 
     public RegisterResult register(String userName, String email, String password) {
         RegisterResult registerResult = new RegisterResult();
@@ -76,6 +77,26 @@ public class ApiManager {
             promotionResult.setError(e.getMessage());
         }
         return promotionResult;
+    }
+
+    public QrCodeResult getQrCode(String id) {
+        QrCodeResult qrCodeResult = new QrCodeResult();
+        try {
+            String passwordForBasicAuth = "yesMan";    // hardcoded
+            String userForBasicAuth = "anyUser";    // hardcoded, any string is ok
+            HttpCommunicator httpCommunicator = new HttpCommunicator();
+
+            String idEncoded = URLEncoder.encode(id, "UTF-8");
+            String url = String.format(QR_CODE_URL, idEncoded);
+            String httpResponse = httpCommunicator.httpRequest(url, userForBasicAuth, passwordForBasicAuth);
+            return parseQrCodeJson(httpResponse);
+        } catch (AppException e) {
+            LoggerInstance.get().error(TAG, " Login failed: ", e);
+            qrCodeResult.setError(e.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            LoggerInstance.get().error(TAG, " Login failed: ", e);
+        }
+        return qrCodeResult;
     }
 
     private LoginResult parseJson(String json) {
@@ -145,6 +166,10 @@ public class ApiManager {
         } catch (Exception e) {
             throw new AppException("Unable to parse server response");
         }
+    }
+
+    private QrCodeResult parseQrCodeJson(String json) {
+        return new Gson().fromJson(json, QrCodeResult.class);
     }
 
 }

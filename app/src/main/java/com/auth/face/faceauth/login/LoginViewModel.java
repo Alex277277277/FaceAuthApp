@@ -9,6 +9,7 @@ import com.auth.face.faceauth.ApiManager;
 import com.auth.face.faceauth.FaceAuthApp;
 import com.auth.face.faceauth.LoginResult;
 import com.auth.face.faceauth.PrefStorage;
+import com.auth.face.faceauth.QrCodeResult;
 import com.auth.face.faceauth.navigation.FaceScreenRouter;
 import com.auth.face.faceauth.navigation.PromoScreenRouter;
 import com.auth.face.faceauth.navigation.Router;
@@ -106,19 +107,58 @@ public class LoginViewModel extends BaseViewModel {
 
     private void onPromotionSuccess(PromotionResult promotionResult) {
         hideLoading();
+
+        PrefStorage prefs = FaceAuthApp.Companion.getApp().getPrefs();
         String photoBase64 = promotionResult.getBase64Photo();
-        if (!TextUtils.isEmpty(photoBase64)) {
-            PrefStorage prefs = FaceAuthApp.Companion.getApp().getPrefs();
+        String id = promotionResult.getId();
+        if (!TextUtils.isEmpty(photoBase64) && !TextUtils.isEmpty(id)) {
             prefs.setPromoImage(photoBase64);
-            router.setValue(new PromoScreenRouter());
+            prefs.setPromoId(id);
+            getQrCode(id);
             return;
         }
+
+        prefs.setPromoImage("");
+        prefs.setPromoId("");
         router.setValue(new FaceScreenRouter());
     }
 
     private void onPromotionFailed(Throwable t) {
         hideLoading();
+        PrefStorage prefs = FaceAuthApp.Companion.getApp().getPrefs();
+        prefs.setPromoImage("");
+        prefs.setPromoId("");
         router.setValue(new FaceScreenRouter());
+    }
+
+    private void getQrCode(String id) {
+        showLoading(R.string.signing_in);
+        subscribe(Single
+                .fromCallable(() -> apiManager.getQrCode(id))
+                .toObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::onQrSuccess, this::onQrFailed)
+        );
+    }
+
+    private void onQrSuccess(QrCodeResult qrCodeResult) {
+        hideLoading();
+        PrefStorage prefs = FaceAuthApp.Companion.getApp().getPrefs();
+        String photoBase64 = qrCodeResult.getBase64Photo();
+        if (!TextUtils.isEmpty(photoBase64)) {
+            prefs.setQrCode(photoBase64);
+        } else {
+            prefs.setQrCode("");
+        }
+        router.setValue(new PromoScreenRouter());
+    }
+
+    private void onQrFailed(Throwable t) {
+        hideLoading();
+        PrefStorage prefs = FaceAuthApp.Companion.getApp().getPrefs();
+        prefs.setQrCode("");
+        router.setValue(new PromoScreenRouter());
     }
 
     public MutableLiveData<Router> getRouter() {

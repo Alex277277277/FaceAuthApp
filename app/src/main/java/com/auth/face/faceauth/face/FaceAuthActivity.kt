@@ -39,6 +39,7 @@ class FaceAuthActivity : AppCompatActivity() {
     private fun initializeViewModel() {
         viewModel = ViewModelProviders.of(this).get(FaceAuthViewModel::class.java)
         viewModel.userPhoto.observe(this, Observer { it -> ivPhoto.setImageBitmap(it) })
+        viewModel.qrCode.observe(this, Observer { it -> ivQrCode.setImageBitmap(it) })
         viewModel.username.observe(this, Observer { it -> tvUserName.setText(it) })
         viewModel.dob.observe(this, Observer { it -> tvDob.setText(it) })
         viewModel.loadingResId.observe(this, Observer { it -> setLoading(it) })
@@ -63,10 +64,17 @@ class FaceAuthActivity : AppCompatActivity() {
         infoTextResId?.let {
             if (it == 0) {
                 llInfoPanel.visibility = View.GONE
+            } else if (it == -1) {
+                llInfoPanel.visibility = View.VISIBLE
+                pbProgress.visibility = View.GONE
+                tvInfoText.visibility = View.GONE
+                ivQrCode.visibility = View.VISIBLE
             } else {
                 llInfoPanel.visibility = View.VISIBLE
                 pbProgress.visibility = View.GONE
+                tvInfoText.visibility = View.VISIBLE
                 tvInfoText.text = getString(infoTextResId)
+                ivQrCode.visibility = View.GONE
             }
         }
     }
