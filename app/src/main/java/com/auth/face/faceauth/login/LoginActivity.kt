@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import com.auth.face.faceauth.face.FaceAuthActivity
 import com.auth.face.faceauth.R
+import com.auth.face.faceauth.base.Utils
 
 class LoginActivity : AppCompatActivity() {
 
@@ -46,6 +47,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setLoading(loading: Int?) {
+        Utils.hideKeyboard(this)
         loading?.let {
             if (it == 0) {
                 llInfoPanel.visibility = View.GONE

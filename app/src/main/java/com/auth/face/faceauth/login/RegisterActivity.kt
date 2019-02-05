@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import com.auth.face.faceauth.R
+import com.auth.face.faceauth.base.Utils
 import com.matilock.mati_kyc_sdk.*
 import kotlinx.android.synthetic.main.activity_register.*
 
@@ -72,6 +73,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun setLoading(loading: Int?) {
+        Utils.hideKeyboard(this)
         loading?.let {
             if (it == 0) {
                 llInfoPanel.visibility = View.GONE

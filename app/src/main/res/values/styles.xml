@@ -8,4 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="ButtonStyle" parent="TextAppearance.AppCompat">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/button_shape_primary</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="SecondaryButtonStyle" parent="ButtonStyle">
+        <item name="android:background">@drawable/button_shape_secondary</item>
+    </style>
+
 </resources>

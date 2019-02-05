@@ -12,13 +12,12 @@
     <application
         android:name=".FaceAuthApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".login.LoginActivity" android:windowSoftInputMode="adjustResize|stateVisible">
+        <activity android:name=".login.LoginActivity" android:windowSoftInputMode="adjustPan|stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,7 +28,7 @@
 
         <activity
             android:name=".login.RegisterActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible">
+            android:windowSoftInputMode="adjustPan|stateVisible">
         </activity>
 
         <activity
