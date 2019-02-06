@@ -1,5 +1,6 @@
 package com.auth.face.faceauth.face
 
+import android.animation.ArgbEvaluator
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -8,7 +9,6 @@ import android.util.Log
 import android.view.View
 
 import com.auth.face.faceauth.R
-import com.auth.face.faceauth.base.Utils
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.vision.CameraSource
@@ -19,6 +19,10 @@ import com.google.android.gms.vision.face.Face
 import com.google.android.gms.vision.face.FaceDetector
 import kotlinx.android.synthetic.main.activity_face_auth.*
 import java.io.IOException
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
+import android.graphics.Color
+
 
 class FaceAuthActivity : AppCompatActivity() {
 
@@ -26,6 +30,7 @@ class FaceAuthActivity : AppCompatActivity() {
 
     private var mCameraSource: CameraSource? = null
     private var liveFaceDetector: LiveFaceDetector? = null
+    private var anim : ObjectAnimator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -171,26 +176,35 @@ class FaceAuthActivity : AppCompatActivity() {
     }
 
     private fun updateState(state: FaceState?) {
-        Utils.blinkView(vStateRed, false)
-        Utils.blinkView(vStateOrange, false)
-        Utils.blinkView(vStateGreen, false)
+        anim?.cancel()
+        middleContainer.setBackgroundColor(Color.WHITE)
 
         when (state) {
             FaceState.VERIFYING -> {
-                Utils.blinkView(vStateOrange, true)
-                Utils.blinkView(vStateRed, true)
+                blink(R.color.colorOrange)
             }
             FaceState.MATCH -> {
-                Utils.blinkView(vStateGreen, true)
+                blink(R.color.colorGreen)
             }
             FaceState.FAILURE -> {
-                Utils.blinkView(vStateRed, true)
+                blink(R.color.colorRed)
             }
             FaceState.WAITING -> {
-                Utils.blinkView(vStateRed, true)
+                blink(R.color.colorRed)
             }
 
         }
+    }
+
+    private fun blink(colorResId: Int) {
+        val color = resources.getColor(colorResId)
+
+        anim = ObjectAnimator.ofInt(middleContainer, "backgroundColor", Color.WHITE, color, Color.WHITE)
+        anim?.duration = 300
+        anim?.setEvaluator(ArgbEvaluator())
+        anim?.repeatMode = ValueAnimator.REVERSE
+        anim?.repeatCount = ValueAnimator.INFINITE
+        anim?.start()
     }
 
 }
