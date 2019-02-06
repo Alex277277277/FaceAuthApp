@@ -20,6 +20,9 @@
 
     <string name="label_username">Name  :</string>
     <string name="label_dob">D.O.B. :</string>
+    <string name="label_status_invalid">Invalid</string>
+    <string name="label_status_advisory">Advisory</string>
+    <string name="label_time_left">Time left: %d </string>
 
     <string name="err_empty_username">User name is empty</string>
     <string name="err_empty_email">Email is empty</string>

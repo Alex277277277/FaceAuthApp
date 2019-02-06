@@ -50,6 +50,7 @@ class FaceAuthActivity : AppCompatActivity() {
         viewModel.loadingResId.observe(this, Observer { it -> setLoading(it) })
         viewModel.infoTextResId.observe(this, Observer { it -> setInfoText(it) })
         viewModel.faceState.observe(this, Observer { it -> updateState(it) })
+        viewModel.statusLabel.observe(this, Observer { it -> updateStatusText(it) })
         viewModel.initialize()
     }
 
@@ -177,19 +178,22 @@ class FaceAuthActivity : AppCompatActivity() {
 
     private fun updateState(state: FaceState?) {
         anim?.cancel()
-        middleContainer.setBackgroundColor(Color.WHITE)
+        tvStatusText.setBackgroundColor(Color.WHITE)
 
         when (state) {
             FaceState.VERIFYING -> {
+                tvStatusText.setText(R.string.label_status_advisory)
                 blink(R.color.colorOrange)
             }
             FaceState.MATCH -> {
                 blink(R.color.colorGreen)
             }
             FaceState.FAILURE -> {
+                tvStatusText.setText(R.string.label_status_invalid)
                 blink(R.color.colorRed)
             }
             FaceState.WAITING -> {
+                tvStatusText.setText(R.string.label_status_invalid)
                 blink(R.color.colorRed)
             }
 
@@ -199,12 +203,16 @@ class FaceAuthActivity : AppCompatActivity() {
     private fun blink(colorResId: Int) {
         val color = resources.getColor(colorResId)
 
-        anim = ObjectAnimator.ofInt(middleContainer, "backgroundColor", Color.WHITE, color, Color.WHITE)
-        anim?.duration = 300
+        anim = ObjectAnimator.ofInt(tvStatusText, "backgroundColor", Color.WHITE, color, Color.WHITE)
+        anim?.duration = 1000
         anim?.setEvaluator(ArgbEvaluator())
         anim?.repeatMode = ValueAnimator.REVERSE
         anim?.repeatCount = ValueAnimator.INFINITE
         anim?.start()
+    }
+
+    private fun updateStatusText(statusText: String?) {
+        tvStatusText.setText(statusText)
     }
 
 }

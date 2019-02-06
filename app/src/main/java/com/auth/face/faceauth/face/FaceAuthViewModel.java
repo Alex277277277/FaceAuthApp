@@ -39,9 +39,12 @@ public class FaceAuthViewModel extends BaseViewModel {
     private static final long INTERVAL_NOT_MATCH = 5*1000;
 
     private boolean initialized;
+    private Handler countdownHandler;
 
     private FaceServiceRestClient faceServiceClient;
     private UUID photoFaceId;
+
+    private long countdown;
 
     private Scheduler processingScheduler = Schedulers.from(Executors.newSingleThreadExecutor());
     private PublishSubject<Bitmap> faceImageNotifier = PublishSubject.create();
@@ -53,6 +56,7 @@ public class FaceAuthViewModel extends BaseViewModel {
 
     private final MutableLiveData<FaceState> faceState = new MutableLiveData<>();
     private final MutableLiveData<Integer> infoTextResId = new MutableLiveData<>();
+    private final MutableLiveData<String> statusLabel = new MutableLiveData<>();
 
     public FaceAuthViewModel(Application application) {
         super(application);
@@ -78,6 +82,10 @@ public class FaceAuthViewModel extends BaseViewModel {
         return infoTextResId;
     }
 
+    public MutableLiveData<String> getStatusLabel() {
+        return statusLabel;
+    }
+
     public PublishSubject<Bitmap> getFaceImageNotifier() {
         return faceImageNotifier;
     }
@@ -88,6 +96,8 @@ public class FaceAuthViewModel extends BaseViewModel {
 
     public void initialize() {
         if (!initialized) {
+
+            countdownHandler = new Handler();
 
             faceState.setValue(FaceState.WAITING);
 
@@ -101,6 +111,12 @@ public class FaceAuthViewModel extends BaseViewModel {
 
             initialized = true;
         }
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        countdownHandler.removeCallbacksAndMessages(null);
     }
 
     private void loadUserData() {
@@ -192,6 +208,7 @@ public class FaceAuthViewModel extends BaseViewModel {
             faceState.setValue(FaceState.MATCH);
             infoTextResId.setValue(-1);
             postWaitingStateDelayed(INTERVAL_MATCH);
+            startCountdown();
         } else {
             LoggerInstance.get().debug(TAG, "onFaceVerificationSuccess -> FACES DON'T MATCH");
             faceState.setValue(FaceState.FAILURE);
@@ -211,5 +228,25 @@ public class FaceAuthViewModel extends BaseViewModel {
             faceState.setValue(FaceState.WAITING);
         }, delay);
     }
+
+    private void startCountdown() {
+        countdown = INTERVAL_MATCH / 1000;
+        countdownHandler.post(mRunnable);
+    }
+
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (faceState.getValue() == FaceState.MATCH) {
+                if (countdown > 0) {
+                    statusLabel.setValue(mContext.getString(R.string.label_time_left, countdown));
+                    countdown--;
+                    countdownHandler.postDelayed(mRunnable, 1000);
+                } else {
+                    statusLabel.setValue(mContext.getString(R.string.label_time_left, 0));
+                }
+            }
+        }
+    };
 
 }
