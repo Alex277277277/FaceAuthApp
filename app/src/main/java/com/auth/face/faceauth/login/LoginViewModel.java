@@ -2,7 +2,6 @@ package com.auth.face.faceauth.login;
 
 import android.Manifest;
 import android.app.Application;
-import android.arch.lifecycle.MutableLiveData;
 import android.location.Location;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -25,6 +24,7 @@ import com.auth.face.faceauth.logger.LoggerInstance;
 
 import org.jetbrains.annotations.NotNull;
 
+import androidx.lifecycle.MutableLiveData;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;

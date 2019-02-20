@@ -1,7 +1,6 @@
 package com.auth.face.faceauth.login;
 
 import android.app.Application;
-import android.arch.lifecycle.MutableLiveData;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -13,6 +12,7 @@ import com.auth.face.faceauth.RegisterResult;
 import com.auth.face.faceauth.base.BaseViewModel;
 import com.auth.face.faceauth.logger.LoggerInstance;
 
+import androidx.lifecycle.MutableLiveData;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;

@@ -1,6 +1,7 @@
 package com.auth.face.faceauth.logger;
 
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 public final class LoggerInstance implements Logger {
 

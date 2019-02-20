@@ -1,16 +1,16 @@
 package com.auth.face.faceauth.login
 
 import android.Manifest
-import android.arch.lifecycle.Observer
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_login.*
-import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.auth.face.faceauth.R
 import com.auth.face.faceauth.base.Utils
 import com.auth.face.faceauth.navigation.RegisterScreenRouter

@@ -1,6 +1,7 @@
 package com.auth.face.faceauth;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.auth.face.faceauth.base.AppException;
 import com.auth.face.faceauth.logger.LoggerInstance;

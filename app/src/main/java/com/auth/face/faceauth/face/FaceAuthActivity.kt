@@ -1,10 +1,7 @@
 package com.auth.face.faceauth.face
 
 import android.animation.ArgbEvaluator
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 
@@ -22,6 +19,9 @@ import java.io.IOException
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.graphics.Color
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 
 
 class FaceAuthActivity : AppCompatActivity() {

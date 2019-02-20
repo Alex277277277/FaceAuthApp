@@ -1,6 +1,5 @@
 package com.auth.face.faceauth.logger;
 
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.Closeable;
@@ -12,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.Nullable;
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;

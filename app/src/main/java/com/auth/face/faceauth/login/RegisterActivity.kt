@@ -1,13 +1,13 @@
 package com.auth.face.faceauth.login
 
-import android.arch.lifecycle.ViewModelProviders
-import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.auth.face.faceauth.R
 import com.auth.face.faceauth.base.Utils
 import com.matilock.mati_kyc_sdk.*

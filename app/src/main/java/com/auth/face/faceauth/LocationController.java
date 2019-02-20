@@ -5,8 +5,6 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.auth.face.faceauth.base.LocationReadyListener;
 import com.auth.face.faceauth.logger.LoggerInstance;
@@ -15,6 +13,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class LocationController implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 

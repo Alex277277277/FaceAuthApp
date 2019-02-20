@@ -2,10 +2,10 @@ package com.auth.face.faceauth.promo
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 
 import com.auth.face.faceauth.FaceAuthApp
 import com.auth.face.faceauth.R
