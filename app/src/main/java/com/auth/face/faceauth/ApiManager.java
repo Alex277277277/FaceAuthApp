@@ -20,11 +20,18 @@ public class ApiManager {
 
     private static final String TAG = FaceAuthApp.Companion.getTAG() + ":" + ApiManager.class.getSimpleName();
 
-    private static final String LOGIN_URL = "http://testportalapp3.azurewebsites.net/api/user?uId=%s";
-    private static final String REGISTER_URL = "https://testportalapp3.azurewebsites.net/api/generator?name=%s&pass=%s&email=%s";
+    private static final String LOGIN_URL = "http://iidapidev.azurewebsites.net/api/user?uId=%s";
+    private static final String REGISTER_URL = "http://iidapidev.azurewebsites.net/api/generator?name=%s&pass=%s&email=%s";
 
-    private static final String PROMOTION_URL = "http://testportalapp3.azurewebsites.net/api/promotion?xcord=%s&ycord=%s";
-    private static final String QR_CODE_URL = "http://testportalapp3.azurewebsites.net/api/qrcode/?id=%s";
+    private static final String PROMOTION_URL = "http://iidapidev.azurewebsites.net/api/promotion?xcord=%s&ycord=%s";
+    private static final String QR_CODE_URL = "http://iidapidev.azurewebsites.net/api/qrcode/?id=%s";
+
+
+    //private static final String LOGIN_URL = "http://testportalapp3.azurewebsites.net/api/user?uId=%s";
+    //private static final String REGISTER_URL = "https://testportalapp3.azurewebsites.net/api/generator?name=%s&pass=%s&email=%s";
+
+    //private static final String PROMOTION_URL = "http://testportalapp3.azurewebsites.net/api/promotion?xcord=%s&ycord=%s";
+    //private static final String QR_CODE_URL = "http://testportalapp3.azurewebsites.net/api/qrcode/?id=%s";
 
     public RegisterResult register(String userName, String email, String password) {
         RegisterResult registerResult = new RegisterResult();
@@ -102,14 +109,16 @@ public class ApiManager {
 
     private LoginResult parseJson(String json) {
         try {
-            JsonArray topArrayJsonObject = getTopArrayJsonObject("image", json);
+            /*JsonArray topArrayJsonObject = getTopArrayJsonObject("image", json);
             List<LoginResult> resultList =
                     new Gson().fromJson(
                             topArrayJsonObject,
                             new TypeToken<List<LoginResult>>() {
                             }.getType()
                     );
-            LoginResult result = resultList.get(0);
+            LoginResult result = resultList.get(0);*/
+
+            LoginResult result = new Gson().fromJson(json, LoginResult.class);
 
             if (TextUtils.isEmpty(result.getUsername())) {
                 throw new AppException("Unable to parse user name from the server response");
