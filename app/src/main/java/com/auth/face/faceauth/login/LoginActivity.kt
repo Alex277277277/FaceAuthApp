@@ -13,7 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.auth.face.faceauth.R
 import com.auth.face.faceauth.base.Utils
-import com.auth.face.faceauth.navigation.RegisterScreenRouter
+import com.auth.face.faceauth.navigation.TermsScreenRouter
 
 class LoginActivity : AppCompatActivity() {
 
@@ -24,7 +24,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         btSignIn.setOnClickListener { v -> viewModel.login(etUserName.text.toString(), etUserPassword.text.toString()) }
-        btRegister.setOnClickListener { v -> RegisterScreenRouter().route(this) }
+        btRegister.setOnClickListener { v -> TermsScreenRouter().route(this) }
         etUserPassword.setOnEditorActionListener { v, actionId, event ->
             return@setOnEditorActionListener when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {

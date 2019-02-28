@@ -17,6 +17,8 @@
     <string name="password_confirm">Confirm password</string>
     <string name="signing_in">Signing in</string>
     <string name="registering">Registering</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
 
     <string name="label_username">Name  :</string>
     <string name="label_dob">D.O.B. :</string>
