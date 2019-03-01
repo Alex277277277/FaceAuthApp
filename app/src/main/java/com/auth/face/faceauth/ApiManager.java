@@ -1,7 +1,6 @@
 package com.auth.face.faceauth;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.auth.face.faceauth.base.AppException;
 import com.auth.face.faceauth.logger.LoggerInstance;
@@ -24,14 +23,13 @@ public class ApiManager {
     private static final String REGISTER_URL = "http://iidapidev.azurewebsites.net/api/generator?name=%s&pass=%s&email=%s";
 
     private static final String PROMOTION_URL = "http://iidapidev.azurewebsites.net/api/promotion?xcord=%s&ycord=%s";
-    private static final String QR_CODE_URL = "http://iidapidev.azurewebsites.net/api/qrcode/?id=%s";
-
+    //private static final String QR_CODE_URL = "http://iidapidev.azurewebsites.net/api/qrcode/?id=%s";
+    private static final String QR_CODE_URL = "http://testportalapp3.azurewebsites.net/api/qrcode/?id=%s";
 
     //private static final String LOGIN_URL = "http://testportalapp3.azurewebsites.net/api/user?uId=%s";
     //private static final String REGISTER_URL = "https://testportalapp3.azurewebsites.net/api/generator?name=%s&pass=%s&email=%s";
 
     //private static final String PROMOTION_URL = "http://testportalapp3.azurewebsites.net/api/promotion?xcord=%s&ycord=%s";
-    //private static final String QR_CODE_URL = "http://testportalapp3.azurewebsites.net/api/qrcode/?id=%s";
 
     public RegisterResult register(String userName, String email, String password) {
         RegisterResult registerResult = new RegisterResult();
@@ -90,11 +88,11 @@ public class ApiManager {
     public QrCodeResult getQrCode(String id) {
         QrCodeResult qrCodeResult = new QrCodeResult();
         try {
-            String passwordForBasicAuth = "yesMan";    // hardcoded
-            String userForBasicAuth = "anyUser";    // hardcoded, any string is ok
             HttpCommunicator httpCommunicator = new HttpCommunicator();
 
             String idEncoded = URLEncoder.encode(id, "UTF-8");
+            String passwordForBasicAuth = "yesMan";    // hardcoded
+            String userForBasicAuth = idEncoded;    // hardcoded, any string is ok
             String url = String.format(QR_CODE_URL, idEncoded);
             String httpResponse = httpCommunicator.httpRequest(url, userForBasicAuth, passwordForBasicAuth);
             return parseQrCodeJson(httpResponse);
@@ -122,6 +120,9 @@ public class ApiManager {
 
             if (TextUtils.isEmpty(result.getUsername())) {
                 throw new AppException("Unable to parse user name from the server response");
+            }
+            if (TextUtils.isEmpty(result.getUserId())) {
+                throw new AppException("Unable to parse user id from the server response");
             }
             if (TextUtils.isEmpty(result.getDob())) {
                 throw new AppException("Unable to parse DOB from the server response");

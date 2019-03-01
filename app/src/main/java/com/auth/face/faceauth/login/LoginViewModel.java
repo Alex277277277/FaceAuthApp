@@ -84,6 +84,11 @@ public class LoginViewModel extends BaseViewModel {
             username = "";
         }
 
+        String userId = result.getUserId();
+        if (userId == null) {
+            userId = "";
+        }
+
         String dob = result.getDob();
         if (dob == null) {
             dob = "";
@@ -93,6 +98,7 @@ public class LoginViewModel extends BaseViewModel {
         PrefStorage prefs = FaceAuthApp.Companion.getApp().getPrefs();
         prefs.setPhoto(photoBase64);
         prefs.setUsername(username);
+        prefs.setUserId(userId);
         prefs.setDob(dob);
 
         getPromotion();
@@ -123,7 +129,7 @@ public class LoginViewModel extends BaseViewModel {
         if (!TextUtils.isEmpty(photoBase64) && !TextUtils.isEmpty(id)) {
             prefs.setPromoImage(photoBase64);
             prefs.setPromoId(id);
-            getQrCode(id);
+            router.setValue(new PromoScreenRouter());
             return;
         }
 
@@ -138,36 +144,6 @@ public class LoginViewModel extends BaseViewModel {
         prefs.setPromoImage("");
         prefs.setPromoId("");
         router.setValue(new FaceScreenRouter());
-    }
-
-    private void getQrCode(String id) {
-        showLoading(R.string.signing_in);
-        subscribe(Single
-                .fromCallable(() -> apiManager.getQrCode(id))
-                .toObservable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onQrSuccess, this::onQrFailed)
-        );
-    }
-
-    private void onQrSuccess(QrCodeResult qrCodeResult) {
-        hideLoading();
-        PrefStorage prefs = FaceAuthApp.Companion.getApp().getPrefs();
-        String photoBase64 = qrCodeResult.getBase64Photo();
-        if (!TextUtils.isEmpty(photoBase64)) {
-            prefs.setQrCode(photoBase64);
-        } else {
-            prefs.setQrCode("");
-        }
-        router.setValue(new PromoScreenRouter());
-    }
-
-    private void onQrFailed(Throwable t) {
-        hideLoading();
-        PrefStorage prefs = FaceAuthApp.Companion.getApp().getPrefs();
-        prefs.setQrCode("");
-        router.setValue(new PromoScreenRouter());
     }
 
     public MutableLiveData<Router> getRouter() {

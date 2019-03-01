@@ -4,9 +4,12 @@ import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.widget.Toast;
 
+import com.auth.face.faceauth.ApiManager;
 import com.auth.face.faceauth.FaceAuthApp;
 import com.auth.face.faceauth.PrefStorage;
+import com.auth.face.faceauth.QrCodeResult;
 import com.auth.face.faceauth.R;
 import com.auth.face.faceauth.base.BaseViewModel;
 import com.auth.face.faceauth.base.Utils;
@@ -41,6 +44,9 @@ public class FaceAuthViewModel extends BaseViewModel {
     private boolean initialized;
     private Handler countdownHandler;
 
+    private ApiManager apiManager;
+    private PrefStorage prefs = FaceAuthApp.Companion.getApp().getPrefs();
+
     private FaceServiceRestClient faceServiceClient;
     private UUID photoFaceId;
 
@@ -60,6 +66,7 @@ public class FaceAuthViewModel extends BaseViewModel {
 
     public FaceAuthViewModel(Application application) {
         super(application);
+        apiManager = new ApiManager();
     }
 
     public MutableLiveData<Bitmap> getUserPhoto() {
@@ -129,11 +136,6 @@ public class FaceAuthViewModel extends BaseViewModel {
 
         username.setValue(prefs.getUsername());
         dob.setValue(prefs.getDob());
-
-        String qrCodeBase64Photo = prefs.getQrCode();
-        byte[] qrCodePhotoData = Utils.fromBase64(qrCodeBase64Photo);
-        Bitmap qrCodeBitmap = BitmapFactory.decodeByteArray(qrCodePhotoData, 0, qrCodePhotoData.length);
-        qrCode.setValue(qrCodeBitmap);
     }
 
     private void detectFaceOnPhoto() {
@@ -209,6 +211,7 @@ public class FaceAuthViewModel extends BaseViewModel {
             infoTextResId.setValue(-1);
             postWaitingStateDelayed(INTERVAL_MATCH);
             startCountdown();
+            getQrCode(prefs.getUserId());
         } else {
             LoggerInstance.get().debug(TAG, "onFaceVerificationSuccess -> FACES DON'T MATCH");
             faceState.setValue(FaceState.FAILURE);
@@ -248,5 +251,27 @@ public class FaceAuthViewModel extends BaseViewModel {
             }
         }
     };
+
+    private void getQrCode(String id) {
+        showLoading(R.string.signing_in);
+        subscribe(Single
+                .fromCallable(() -> apiManager.getQrCode(id))
+                .toObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::onQrSuccess, this::onQrFailed)
+        );
+    }
+
+    private void onQrSuccess(QrCodeResult qrCodeResult) {
+        String photoBase64 = qrCodeResult.getBase64Photo();
+        byte[] qrCodePhotoData = Utils.fromBase64(photoBase64);
+        Bitmap qrCodeBitmap = BitmapFactory.decodeByteArray(qrCodePhotoData, 0, qrCodePhotoData.length);
+        qrCode.setValue(qrCodeBitmap);
+    }
+
+    private void onQrFailed(Throwable t) {
+        Toast.makeText(mContext, R.string.err_failed_to_load_qr, Toast.LENGTH_LONG).show();
+    }
 
 }

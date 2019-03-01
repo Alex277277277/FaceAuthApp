@@ -16,6 +16,10 @@ class PrefStorage(context: Context) {
         get() = sharedPreferences.getString(KEY_USERNAME, "")
         set(Username) = applyString(KEY_USERNAME, Username)
 
+    var userId: String
+        get() = sharedPreferences.getString(KEY_USER_ID, "")
+        set(userId) = applyString(KEY_USER_ID, userId)
+
     var dob: String
         get() = sharedPreferences.getString(KEY_DOB, "")
         set(dob) = applyString(KEY_DOB, dob)
@@ -46,6 +50,7 @@ class PrefStorage(context: Context) {
     companion object {
         private val KEY_PHOTO = "key_photo"
         private val KEY_USERNAME = "key_username"
+        private val KEY_USER_ID = "key_user_id"
         private val KEY_DOB = "key_dob"
         private val KEY_PROMO_IMAGE = "key_promo_image"
         private val KEY_PROMO_ID = "key_promo_id"

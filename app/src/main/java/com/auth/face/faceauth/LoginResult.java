@@ -12,6 +12,9 @@ public class LoginResult implements Serializable {
     @SerializedName("name")
     private String username;
 
+    @SerializedName("userId")
+    private String userId;
+
     @SerializedName("dob")
     private String dob;
 
@@ -31,6 +34,14 @@ public class LoginResult implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getDob() {

@@ -8,5 +8,6 @@ class RegisterScreenRouter : Router {
     override fun route(activity: Activity) {
         val intent = Intent(activity, RegisterActivity::class.java)
         activity.startActivity(intent)
+        activity.finish()
     }
 }
