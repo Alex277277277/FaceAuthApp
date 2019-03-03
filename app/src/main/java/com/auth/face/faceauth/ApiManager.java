@@ -107,19 +107,13 @@ public class ApiManager {
 
     private LoginResult parseJson(String json) {
         try {
-            /*JsonArray topArrayJsonObject = getTopArrayJsonObject("image", json);
-            List<LoginResult> resultList =
-                    new Gson().fromJson(
-                            topArrayJsonObject,
-                            new TypeToken<List<LoginResult>>() {
-                            }.getType()
-                    );
-            LoginResult result = resultList.get(0);*/
-
             LoginResult result = new Gson().fromJson(json, LoginResult.class);
 
             if (TextUtils.isEmpty(result.getUsername())) {
                 throw new AppException("Unable to parse user name from the server response");
+            }
+            if (TextUtils.isEmpty(result.getId())) {
+                throw new AppException("Unable to parse id from the server response");
             }
             if (TextUtils.isEmpty(result.getUserId())) {
                 throw new AppException("Unable to parse user id from the server response");

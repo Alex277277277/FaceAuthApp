@@ -16,6 +16,7 @@ import com.auth.face.faceauth.base.LocationReadyListener;
 import com.auth.face.faceauth.base.Utils;
 import com.auth.face.faceauth.navigation.FaceScreenRouter;
 import com.auth.face.faceauth.navigation.PromoScreenRouter;
+import com.auth.face.faceauth.navigation.QrScreenRouter;
 import com.auth.face.faceauth.navigation.Router;
 import com.auth.face.faceauth.promo.PromotionResult;
 import com.auth.face.faceauth.R;
@@ -84,6 +85,11 @@ public class LoginViewModel extends BaseViewModel {
             username = "";
         }
 
+        String id = result.getId();
+        if (id == null) {
+            id = "";
+        }
+
         String userId = result.getUserId();
         if (userId == null) {
             userId = "";
@@ -98,8 +104,14 @@ public class LoginViewModel extends BaseViewModel {
         PrefStorage prefs = FaceAuthApp.Companion.getApp().getPrefs();
         prefs.setPhoto(photoBase64);
         prefs.setUsername(username);
+        prefs.setId(id);
         prefs.setUserId(userId);
         prefs.setDob(dob);
+
+        if (result.isVerifier()) {
+            router.setValue(new QrScreenRouter());
+            return;
+        }
 
         getPromotion();
     }

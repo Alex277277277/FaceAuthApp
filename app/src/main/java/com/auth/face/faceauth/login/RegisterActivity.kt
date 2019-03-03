@@ -65,6 +65,7 @@ class RegisterActivity : AppCompatActivity() {
         })
 
         MatiLoginManager.getInstance().login(this)
+        finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -12,11 +12,17 @@ public class LoginResult implements Serializable {
     @SerializedName("name")
     private String username;
 
+    @SerializedName("id")
+    private String id;
+
     @SerializedName("userId")
     private String userId;
 
     @SerializedName("dob")
     private String dob;
+
+    @SerializedName("verifier")
+    private boolean verifier;
 
     private String error;
 
@@ -36,6 +42,14 @@ public class LoginResult implements Serializable {
         this.username = username;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -52,6 +66,14 @@ public class LoginResult implements Serializable {
         this.dob = dob;
     }
 
+    public boolean isVerifier() {
+        return verifier;
+    }
+
+    public void setVerifier(boolean verifier) {
+        this.verifier = verifier;
+    }
+
     public String getError() {
         return error;
     }
@@ -59,4 +81,5 @@ public class LoginResult implements Serializable {
     public void setError(String error) {
         this.error = error;
     }
+
 }

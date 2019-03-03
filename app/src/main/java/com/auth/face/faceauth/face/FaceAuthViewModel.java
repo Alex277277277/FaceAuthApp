@@ -211,7 +211,7 @@ public class FaceAuthViewModel extends BaseViewModel {
             infoTextResId.setValue(-1);
             postWaitingStateDelayed(INTERVAL_MATCH);
             startCountdown();
-            getQrCode(prefs.getUserId());
+            getQrCode(prefs.getId());
         } else {
             LoggerInstance.get().debug(TAG, "onFaceVerificationSuccess -> FACES DON'T MATCH");
             faceState.setValue(FaceState.FAILURE);
