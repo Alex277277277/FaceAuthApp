@@ -8,6 +8,5 @@ class QrScreenRouter : Router {
     override fun route(activity: Activity) {
         val intent = Intent(activity, QrActivity::class.java)
         activity.startActivity(intent)
-        activity.finish()
     }
 }
