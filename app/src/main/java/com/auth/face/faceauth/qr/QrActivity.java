@@ -2,12 +2,13 @@ package com.auth.face.faceauth.qr;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 
+import com.auth.face.faceauth.ProfileResult;
 import com.auth.face.faceauth.R;
 import com.auth.face.faceauth.qr.camera.CameraSource;
 import com.auth.face.faceauth.qr.camera.CameraSourcePreview;
@@ -21,8 +22,8 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
 public class QrActivity extends AppCompatActivity {
 
@@ -33,22 +34,37 @@ public class QrActivity extends AppCompatActivity {
     private CameraSource mCameraSource;
     private CameraSourcePreview mPreview;
     private GraphicOverlay<BarcodeGraphic> mGraphicOverlay;
+    private View mProfile;
+
+    private QrViewModel viewModel;
 
     private BarcodeDetector barcodeDetector;
-    private volatile boolean isScanActive = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_qr_capture);
 
+        mProfile = findViewById(R.id.profile);
         mPreview = findViewById(R.id.preview);
         mGraphicOverlay = findViewById(R.id.graphicOverlay);
         mGraphicOverlay.setShowText(false);
         mGraphicOverlay.setRectColors(null);
         mGraphicOverlay.setDrawRect(false);
 
+        initializeViewModel();
+
         createCameraSource();
+    }
+
+    private void initializeViewModel() {
+        viewModel = ViewModelProviders.of(this).get(QrViewModel.class);
+        viewModel.getProfileResult().observe(this, this::onProfileReady);
+    }
+
+    private void onProfileReady(ProfileResult profileResult) {
+        mPreview.setVisibility(View.GONE);
+        mProfile.setVisibility(View.VISIBLE);
     }
 
     @SuppressLint("InlinedApi")
@@ -57,7 +73,7 @@ public class QrActivity extends AppCompatActivity {
         BarcodeTrackerFactory barcodeFactory = new BarcodeTrackerFactory(mGraphicOverlay) {
             @Override
             void onCodeDetected(Barcode barcode) {
-                onRetrieved(barcode);
+                runOnUiThread(() -> viewModel.onBarcodeRetrieved(barcode));
             }
         };
 
@@ -133,27 +149,4 @@ public class QrActivity extends AppCompatActivity {
         return barcodeDetector;
     }
 
-    private void onRetrieved(Barcode barcode) {
-        if (!isScanActive) {
-            return;
-        }
-        Log.d(TAG, "Barcode read: " + barcode.displayValue);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(QrActivity.this)
-                        .setTitle("code retrieved")
-                        .setMessage(barcode.displayValue)
-                        .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dialog) {
-                                isScanActive = true;
-                            }
-                        });
-                builder.show();
-            }
-        });
-        isScanActive = false;
-    }
 }

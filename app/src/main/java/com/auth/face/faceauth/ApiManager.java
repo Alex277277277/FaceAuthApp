@@ -23,8 +23,8 @@ public class ApiManager {
     private static final String REGISTER_URL = "http://iidapidev.azurewebsites.net/api/generator?name=%s&pass=%s&email=%s";
 
     private static final String PROMOTION_URL = "http://iidapidev.azurewebsites.net/api/promotion?xcord=%s&ycord=%s";
-    //private static final String QR_CODE_URL = "http://iidapidev.azurewebsites.net/api/qrcode/?id=%s";
-    private static final String QR_CODE_URL = "http://testportalapp3.azurewebsites.net/api/qrcode/?id=%s";
+    private static final String QR_CODE_URL = "http://iidapidev.azurewebsites.net/api/qrcode/%s";
+    //private static final String QR_CODE_URL = "http://testportalapp3.azurewebsites.net/api/qrcode/?id=%s";
 
     //private static final String LOGIN_URL = "http://testportalapp3.azurewebsites.net/api/user?uId=%s";
     //private static final String REGISTER_URL = "https://testportalapp3.azurewebsites.net/api/generator?name=%s&pass=%s&email=%s";
@@ -69,6 +69,21 @@ public class ApiManager {
         }
         return loginResult;
     }
+
+    public ProfileResult profile(String url) {
+        ProfileResult profileResult = new ProfileResult();
+        try {
+            HttpCommunicator httpCommunicator = new HttpCommunicator();
+
+            String httpResponse = httpCommunicator.httpRequest(url, null, null);
+            return parseProfileJson(httpResponse);
+        } catch (AppException e) {
+            LoggerInstance.get().error(TAG, " Profile failed: ", e);
+            profileResult.setError(e.getMessage());
+        }
+        return profileResult;
+    }
+
 
     public PromotionResult getPromotion(double lat, double lng) {
         PromotionResult promotionResult = new PromotionResult();
@@ -131,6 +146,16 @@ public class ApiManager {
             String base64Image = webBase64Str.substring(dataPosition);
             result.setBase64Photo(base64Image);
             return result;
+        } catch (AppException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AppException("Unable to parse server response");
+        }
+    }
+
+    private ProfileResult parseProfileJson(String json) {
+        try {
+            return new Gson().fromJson(json, ProfileResult.class);
         } catch (AppException e) {
             throw e;
         } catch (Exception e) {
