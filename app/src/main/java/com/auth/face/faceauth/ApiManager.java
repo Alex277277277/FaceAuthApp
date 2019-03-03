@@ -1,6 +1,7 @@
 package com.auth.face.faceauth;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.auth.face.faceauth.base.AppException;
 import com.auth.face.faceauth.logger.LoggerInstance;
@@ -70,12 +71,13 @@ public class ApiManager {
         return loginResult;
     }
 
-    public ProfileResult profile(String url) {
+    public ProfileResult profile(String url, String userName, String password) {
         ProfileResult profileResult = new ProfileResult();
         try {
             HttpCommunicator httpCommunicator = new HttpCommunicator();
 
-            String httpResponse = httpCommunicator.httpRequest(url, null, null);
+            String httpResponse = httpCommunicator.httpRequest(url, userName, password);
+            Log.v("FaceAuth", "Profile = " + httpResponse);
             return parseProfileJson(httpResponse);
         } catch (AppException e) {
             LoggerInstance.get().error(TAG, " Profile failed: ", e);
@@ -83,7 +85,6 @@ public class ApiManager {
         }
         return profileResult;
     }
-
 
     public PromotionResult getPromotion(double lat, double lng) {
         PromotionResult promotionResult = new PromotionResult();
@@ -155,7 +156,15 @@ public class ApiManager {
 
     private ProfileResult parseProfileJson(String json) {
         try {
-            return new Gson().fromJson(json, ProfileResult.class);
+            ProfileResult result = new Gson().fromJson(json, ProfileResult.class);
+            String marker = "base64,";
+            String webBase64Str = result.getBase64Photo();
+            if (!TextUtils.isEmpty(webBase64Str)) {
+                int dataPosition = webBase64Str.indexOf(marker) + marker.length();
+                String base64Image = webBase64Str.substring(dataPosition);
+                result.setBase64Photo(base64Image);
+            }
+            return result;
         } catch (AppException e) {
             throw e;
         } catch (Exception e) {

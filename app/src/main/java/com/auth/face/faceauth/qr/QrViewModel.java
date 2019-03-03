@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.auth.face.faceauth.ApiManager;
 import com.auth.face.faceauth.FaceAuthApp;
+import com.auth.face.faceauth.PrefStorage;
 import com.auth.face.faceauth.ProfileResult;
 import com.auth.face.faceauth.R;
 import com.auth.face.faceauth.base.BaseViewModel;
@@ -23,6 +24,7 @@ public class QrViewModel extends BaseViewModel {
 
     private static final String TAG = FaceAuthApp.Companion.getTAG() + ":" + QrViewModel.class.getSimpleName();
 
+    private PrefStorage prefs = FaceAuthApp.Companion.getApp().getPrefs();
     private ApiManager apiManager;
     private boolean isScanActive = true;
 
@@ -50,7 +52,7 @@ public class QrViewModel extends BaseViewModel {
         Log.v("FaceAuth", "profile -> url = " + url);
         showLoading(R.string.loading_profile);
         subscribe(Single
-                .fromCallable(() -> apiManager.profile(url))
+                .fromCallable(() -> apiManager.profile(url, prefs.getUsername(), "yesMan"))
                 .toObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

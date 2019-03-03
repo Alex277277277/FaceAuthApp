@@ -12,6 +12,9 @@ public class ProfileResult implements Serializable {
     @SerializedName("name")
     private String username;
 
+    @SerializedName("id")
+    private String id;
+
     @SerializedName("userId")
     private String userId;
 
@@ -34,6 +37,14 @@ public class ProfileResult implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUserId() {

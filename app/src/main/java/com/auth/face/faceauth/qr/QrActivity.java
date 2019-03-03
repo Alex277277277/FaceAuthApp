@@ -2,14 +2,19 @@ package com.auth.face.faceauth.qr;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.auth.face.faceauth.ProfileResult;
 import com.auth.face.faceauth.R;
+import com.auth.face.faceauth.base.Utils;
 import com.auth.face.faceauth.qr.camera.CameraSource;
 import com.auth.face.faceauth.qr.camera.CameraSourcePreview;
 import com.auth.face.faceauth.qr.camera.GraphicOverlay;
@@ -36,6 +41,12 @@ public class QrActivity extends AppCompatActivity {
     private GraphicOverlay<BarcodeGraphic> mGraphicOverlay;
     private View mProfile;
 
+    private ImageView ivPhoto;
+    private TextView tvName;
+    private TextView tvDob;
+    private TextView tvUserId;
+    private TextView tvId;
+
     private QrViewModel viewModel;
 
     private BarcodeDetector barcodeDetector;
@@ -43,7 +54,7 @@ public class QrActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_qr_capture);
+        setContentView(R.layout.activity_qr);
 
         mProfile = findViewById(R.id.profile);
         mPreview = findViewById(R.id.preview);
@@ -51,6 +62,12 @@ public class QrActivity extends AppCompatActivity {
         mGraphicOverlay.setShowText(false);
         mGraphicOverlay.setRectColors(null);
         mGraphicOverlay.setDrawRect(false);
+
+        ivPhoto = findViewById(R.id.ivPhoto);
+        tvName = findViewById(R.id.tvName);
+        tvDob = findViewById(R.id.tvDob);
+        tvUserId = findViewById(R.id.tvUserId);
+        tvId = findViewById(R.id.tvId);
 
         initializeViewModel();
 
@@ -65,6 +82,16 @@ public class QrActivity extends AppCompatActivity {
     private void onProfileReady(ProfileResult profileResult) {
         mPreview.setVisibility(View.GONE);
         mProfile.setVisibility(View.VISIBLE);
+
+        String base64Photo = profileResult.getBase64Photo();
+        byte[] photoData = Utils.fromBase64(base64Photo);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
+        ivPhoto.setImageBitmap(bitmap);
+
+        tvName.setText(profileResult.getUsername());
+        tvDob.setText(profileResult.getDob());
+        tvUserId.setText(profileResult.getUserId());
+        tvId.setText(profileResult.getId());
     }
 
     @SuppressLint("InlinedApi")
