@@ -40,8 +40,11 @@ public class QrActivity extends AppCompatActivity {
     private CameraSourcePreview mPreview;
     private GraphicOverlay<BarcodeGraphic> mGraphicOverlay;
     private View mProfile;
+    private View mQrPrompt;
 
     private ImageView ivPhoto;
+    private ImageView ivDocFront;
+    private ImageView ivDocBack;
     private TextView tvName;
     private TextView tvDob;
     private TextView tvUserId;
@@ -62,12 +65,17 @@ public class QrActivity extends AppCompatActivity {
         mGraphicOverlay.setShowText(false);
         mGraphicOverlay.setRectColors(null);
         mGraphicOverlay.setDrawRect(false);
+        mQrPrompt = findViewById(R.id.qrPrompt);
 
         ivPhoto = findViewById(R.id.ivPhoto);
+        ivDocFront = findViewById(R.id.ivDocFront);
+        ivDocBack = findViewById(R.id.ivDocBack);
         tvName = findViewById(R.id.tvName);
         tvDob = findViewById(R.id.tvDob);
         tvUserId = findViewById(R.id.tvUserId);
         tvId = findViewById(R.id.tvId);
+
+        findViewById(R.id.btClose).setOnClickListener(v -> onClose());
 
         initializeViewModel();
 
@@ -79,14 +87,32 @@ public class QrActivity extends AppCompatActivity {
         viewModel.getProfileResult().observe(this, this::onProfileReady);
     }
 
+    private void onClose() {
+        mPreview.setVisibility(View.VISIBLE);
+        mQrPrompt.setVisibility(View.VISIBLE);
+        mProfile.setVisibility(View.GONE);
+        viewModel.reactivateScaner();
+    }
+
     private void onProfileReady(ProfileResult profileResult) {
         mPreview.setVisibility(View.GONE);
+        mQrPrompt.setVisibility(View.GONE);
         mProfile.setVisibility(View.VISIBLE);
 
         String base64Photo = profileResult.getBase64Photo();
         byte[] photoData = Utils.fromBase64(base64Photo);
         Bitmap bitmap = BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
         ivPhoto.setImageBitmap(bitmap);
+
+        base64Photo = profileResult.getDocumentInfo().getDocumentFront();
+        photoData = Utils.fromBase64(base64Photo);
+        bitmap = BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
+        ivDocFront.setImageBitmap(bitmap);
+
+        base64Photo = profileResult.getDocumentInfo().getDocumentBack();
+        photoData = Utils.fromBase64(base64Photo);
+        bitmap = BitmapFactory.decodeByteArray(photoData, 0, photoData.length);
+        ivDocBack.setImageBitmap(bitmap);
 
         tvName.setText(profileResult.getUsername());
         tvDob.setText(profileResult.getDob());
@@ -176,4 +202,12 @@ public class QrActivity extends AppCompatActivity {
         return barcodeDetector;
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mProfile.getVisibility() == View.VISIBLE) {
+            onClose();
+            return;
+        }
+        super.onBackPressed();
+    }
 }

@@ -48,6 +48,10 @@ public class QrViewModel extends BaseViewModel {
         profile(barcode.displayValue);
     }
 
+    void reactivateScaner() {
+        isScanActive = true;
+    }
+
     private void profile(String url) {
         Log.v("FaceAuth", "profile -> url = " + url);
         showLoading(R.string.loading_profile);

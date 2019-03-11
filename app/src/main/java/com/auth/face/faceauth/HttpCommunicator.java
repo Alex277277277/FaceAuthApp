@@ -47,7 +47,7 @@ public class HttpCommunicator {
             response = httpClient.newCall(requestBuilder.build()).execute();
             if (!response.isSuccessful()) {
                 LoggerInstance.get().error(TAG, "Http server request failed with status code = " + response.code() + " and status message = " + response.message());
-                throw new AppException("Error : " + response.message());
+                throw new AppException("Error : " + response.message(), response.code());
             }
 
             if (response.body() == null) {

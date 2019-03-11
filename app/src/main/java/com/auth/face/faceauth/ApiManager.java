@@ -81,7 +81,11 @@ public class ApiManager {
             return parseProfileJson(httpResponse);
         } catch (AppException e) {
             LoggerInstance.get().error(TAG, " Profile failed: ", e);
-            profileResult.setError(e.getMessage());
+            if (e.getErrCode() == 404) {
+                profileResult.setError(FaceAuthApp.Companion.getApp().getResources().getString(R.string.err_qr_invalid));
+            } else {
+                profileResult.setError(e.getMessage());
+            }
         }
         return profileResult;
     }
@@ -158,12 +162,28 @@ public class ApiManager {
         try {
             ProfileResult result = new Gson().fromJson(json, ProfileResult.class);
             String marker = "base64,";
+
             String webBase64Str = result.getBase64Photo();
             if (!TextUtils.isEmpty(webBase64Str)) {
                 int dataPosition = webBase64Str.indexOf(marker) + marker.length();
                 String base64Image = webBase64Str.substring(dataPosition);
                 result.setBase64Photo(base64Image);
             }
+
+            String documentFrontBase64Str = result.getDocumentInfo().getDocumentFront();
+            if (!TextUtils.isEmpty(documentFrontBase64Str)) {
+                int dataPosition = documentFrontBase64Str.indexOf(marker) + marker.length();
+                String base64Image = documentFrontBase64Str.substring(dataPosition);
+                result.getDocumentInfo().setDocumentFront(base64Image);
+            }
+
+            String documentBackBase64Str = result.getDocumentInfo().getDocumentBack();
+            if (!TextUtils.isEmpty(documentBackBase64Str)) {
+                int dataPosition = documentBackBase64Str.indexOf(marker) + marker.length();
+                String base64Image = documentBackBase64Str.substring(dataPosition);
+                result.getDocumentInfo().setDocumentBack(base64Image);
+            }
+
             return result;
         } catch (AppException e) {
             throw e;

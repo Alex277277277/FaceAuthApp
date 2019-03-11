@@ -32,6 +32,8 @@
     <string name="label_user_id">User ID:</string>
     <string name="label_id">ID:</string>
 
+    <string name="prompt_qr_scan">Scan ID QR - Code</string>
+
     <string name="err_empty_username">User name is empty</string>
     <string name="err_empty_email">Email is empty</string>
     <string name="err_empty_password">Password is empty</string>
@@ -44,6 +46,7 @@
     <string name="err_location_permissions">Location is not available, please grant location permissions</string>
     <string name="err_location_disabled">Location access is disabled, please enable access in device settings</string>
     <string name="err_failed_to_load_qr">Failed to load QR code</string>
+    <string name="err_qr_invalid">Invalid Identification, ask the user to re-validate their ID, before re-scanning</string>
 
     <string name="photo_face_detection">Trying to detect face on photo...</string>
 

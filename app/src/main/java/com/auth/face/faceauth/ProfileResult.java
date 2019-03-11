@@ -21,6 +21,9 @@ public class ProfileResult implements Serializable {
     @SerializedName("dob")
     private String dob;
 
+    @SerializedName("documents")
+    private DocumentInfo documentInfo;
+
     private String error;
 
     public String getBase64Photo() {
@@ -61,6 +64,14 @@ public class ProfileResult implements Serializable {
 
     public void setDob(String dob) {
         this.dob = dob;
+    }
+
+    public DocumentInfo getDocumentInfo() {
+        return documentInfo;
+    }
+
+    public void setDocumentInfo(DocumentInfo documentInfo) {
+        this.documentInfo = documentInfo;
     }
 
     public String getError() {

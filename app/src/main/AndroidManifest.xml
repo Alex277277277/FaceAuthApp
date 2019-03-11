@@ -50,6 +50,7 @@
 
         <activity
             android:name=".qr.QrActivity"
+            android:theme="@style/AppThemeNoActionBar"
             android:screenOrientation="portrait">
         </activity>
 

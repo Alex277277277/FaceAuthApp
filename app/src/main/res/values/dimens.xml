@@ -3,4 +3,6 @@
     <dimen name="button_height">40dp</dimen>
     <dimen name="logo_size">112dp</dimen>
     <dimen name="tc_button_height">64dp</dimen>
+    <dimen name="arrow_button_size">36dp</dimen>
+    <dimen name="profile_photo_size">160dp</dimen>
 </resources>
